@@ -1,20 +1,21 @@
 import { Facebook, MessageCircle, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const footerLinks = {
   categories: [
-    { label: 'Immobilier', href: '#' },
-    { label: 'Véhicules', href: '#' },
-    { label: 'Emploi', href: '#' },
-    { label: 'Électronique', href: '#' },
-    { label: 'Services', href: '#' },
-    { label: 'Mode & Beauté', href: '#' },
+    { label: 'Immobilier', href: '/recherche?category=immobilier' },
+    { label: 'Véhicules', href: '/recherche?category=vehicules' },
+    { label: 'Emploi', href: '/recherche?category=emploi' },
+    { label: 'Électronique', href: '/recherche?category=electronique' },
+    { label: 'Services', href: '/recherche?category=services' },
+    { label: 'Mode & Beauté', href: '/recherche?category=mode' },
   ],
   useful: [
-    { label: 'Conditions Générales', href: '#' },
-    { label: 'Politique de Confidentialité', href: '#' },
-    { label: 'Nous contacter', href: '#' },
-    { label: 'FAQ', href: '#' },
-    { label: 'Blog', href: '#' },
+    { label: 'Conditions Générales', href: '/conditions' },
+    { label: 'Politique de Confidentialité', href: '/confidentialite' },
+    { label: 'Nous contacter', href: '/contact' },
+    { label: 'FAQ', href: '/faq' },
+    { label: 'Blog', href: '/blog' },
   ],
 };
 
@@ -47,9 +48,9 @@ const Footer = () => (
           <ul className="space-y-2.5">
             {footerLinks.categories.map(link => (
               <li key={link.label}>
-                <a href={link.href} className="text-14 text-text-muted hover:text-primary-foreground transition-colors">
+                <Link to={link.href} className="text-14 text-text-muted hover:text-primary-foreground transition-colors">
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -61,9 +62,9 @@ const Footer = () => (
           <ul className="space-y-2.5">
             {footerLinks.useful.map(link => (
               <li key={link.label}>
-                <a href={link.href} className="text-14 text-text-muted hover:text-primary-foreground transition-colors">
+                <Link to={link.href} className="text-14 text-text-muted hover:text-primary-foreground transition-colors">
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

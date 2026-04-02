@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Search, Menu, X, Bell, Plus, ChevronDown, LogOut, User, Shield, MessageSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,9 +14,28 @@ const Header = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  const cityDropdownRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
   const { user, profile, setShowLoginModal, setShowRegisterModal, setShowKYCModal, signOut } = useAuthStore();
 
   const isAuthenticated = !!user;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cityDropdownRef.current && !cityDropdownRef.current.contains(event.target as Node)) {
+        setCityDropdownOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
@@ -29,7 +48,7 @@ const Header = () => {
 
           {/* Search Bar */}
           <div className="flex-1 max-w-[480px] flex items-center bg-background border border-border rounded-input overflow-hidden">
-            <div className="relative">
+            <div className="relative" ref={cityDropdownRef}>
               <button
                 onClick={() => setCityDropdownOpen(!cityDropdownOpen)}
                 className="flex items-center gap-1 px-3 h-10 text-14 text-text-secondary border-r border-border hover:bg-surface transition-colors"
@@ -85,7 +104,7 @@ const Header = () => {
                 </button>
 
                 {/* User menu */}
-                <div className="relative">
+                <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setUserMenuOpen(!userMenuOpen)}
                     className="flex items-center gap-2 p-1.5 rounded-pill hover:bg-background transition-colors"

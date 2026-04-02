@@ -48,22 +48,36 @@ export const useAdminStats = () => {
 
       const { data: recentUsers } = await supabase
         .from('profiles')
-        .select('full_name, created_at')
+        .select('id, full_name, created_at')
         .order('created_at', { ascending: false })
         .limit(2);
+
+      // 6. KYC Pending
+      const { count: pendingKYC } = await supabase
+        .from('kyc_verifications')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
+
+      // 7. Reports Pending
+      const { count: pendingReports } = await supabase
+        .from('reports')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pending');
 
       return {
         activeListings: activeListings || 0,
         pendingModeration: pendingModeration || 0,
         totalUsers: totalUsers || 0,
         totalRevenue,
+        pendingKYC: pendingKYC || 0,
+        pendingReports: pendingReports || 0,
         recentActivity: [
           ...(recentUsers || []).map(u => ({
-            id: `user-${u.full_name}`,
+            id: `user-${u.id}`,
             type: 'user',
             title: 'Nouvel utilisateur',
             description: `${u.full_name} s'est inscrit`,
-            time: new Date(u.created_at).toLocaleString(),
+            time: new Date(u.created_at || '').toLocaleString(),
             link: '/admin/users'
           })),
           ...(recentListings || []).map(l => ({

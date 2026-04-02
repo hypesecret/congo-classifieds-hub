@@ -11,22 +11,24 @@ import {
   LogOut 
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
-
-const navigation = [
-  { name: "Vue d'ensemble", path: '/admin', icon: LayoutDashboard },
-  { name: 'Modération', path: '/admin/moderation', icon: Shield, badge: '12' },
-  { name: 'KYC', path: '/admin/kyc', icon: UserCheck, badge: '5' },
-  { name: 'Signalements', path: '/admin/reports', icon: AlertTriangle, badge: '3' },
-  { name: 'Utilisateurs', path: '/admin/users', icon: Users },
-  { name: 'Paiements', path: '/admin/payments', icon: CreditCard },
-  { name: 'Catégories', path: '/admin/categories', icon: Grid },
-  { name: 'Paramètres', path: '/admin/settings', icon: Settings },
-];
+import { useAdminStats } from '@/hooks/useAdminStats';
 
 const AdminLayout = () => {
   const { pathname } = useLocation();
   const { profile, user, signOut } = useAuthStore();
   const navigate = useNavigate();
+  const { data: stats } = useAdminStats();
+
+  const navigation = [
+    { name: "Vue d'ensemble", path: '/admin', icon: LayoutDashboard },
+    { name: 'Modération', path: '/admin/moderation', icon: Shield, badge: stats?.pendingModeration?.toString() },
+    { name: 'KYC', path: '/admin/kyc', icon: UserCheck, badge: stats?.pendingKYC?.toString() },
+    { name: 'Signalements', path: '/admin/reports', icon: AlertTriangle, badge: stats?.pendingReports?.toString() },
+    { name: 'Utilisateurs', path: '/admin/users', icon: Users },
+    { name: 'Paiements', path: '/admin/payments', icon: CreditCard },
+    { name: 'Catégories', path: '/admin/categories', icon: Grid },
+    { name: 'Paramètres', path: '/admin/settings', icon: Settings },
+  ];
 
   const handleSignOut = async () => {
     await signOut();

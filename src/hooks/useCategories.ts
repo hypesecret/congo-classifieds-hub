@@ -2,16 +2,23 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import type { Category } from '@/types';
 
-export const useCategories = () => {
+export const useCategories = (parentId?: string | null) => {
   return useQuery({
-    queryKey: ['categories'],
+    queryKey: ['categories', parentId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('categories')
         .select('*')
-        .is('parent_id', null)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
+
+      if (parentId) {
+        query = query.eq('parent_id', parentId);
+      } else {
+        query = query.is('parent_id', null);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
 

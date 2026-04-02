@@ -1,23 +1,15 @@
-import React, { useState } from 'react';
-import { 
-  Save,
-  Zap,
-  Shield,
-  Layout,
-  Settings as SettingsIcon,
-  Tag,
-  Plus,
-  X,
-  AlertTriangle
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Save, Zap, Shield, Layout, Settings as SettingsIcon, Tag, Plus, X, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminSettings = () => {
+  const [loading, setLoading] = useState(true);
   // Boosts State
   const [boosts, setBoosts] = useState({
     visibilite: { price: 2500, days: 7 },
@@ -36,10 +28,56 @@ const AdminSettings = () => {
   const [smsProvider, setSmsProvider] = useState('twilio');
   const [maxListings, setMaxListings] = useState(10);
 
-  const handleSave = () => {
-    toast.success('Paramètres sauvegardés avec succès', {
-      description: 'Les modifications sont appliquées immédiatement.'
-    });
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase.from('system_settings').select('*');
+      if (error) throw error;
+
+      data.forEach(item => {
+        if (item.key === 'boost_prices') setBoosts(item.value as any);
+        if (item.key === 'moderation_rules') {
+          const val = item.value as any;
+          setBlacklist(val.blacklist || []);
+          setMinPhotos(val.min_photos || 1);
+        }
+        if (item.key === 'maintenance_mode') {
+          const val = item.value as any;
+          setMaintenance(val.enabled || false);
+          setMaintenanceMsg(val.message || '');
+        }
+      });
+    } catch (e: any) {
+      toast.error('Erreur chargement paramètres : ' + e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const updates = [
+        { key: 'boost_prices', value: boosts },
+        { key: 'moderation_rules', value: { blacklist, min_photos: minPhotos } },
+        { key: 'maintenance_mode', value: { enabled: maintenance, message: maintenanceMsg } }
+      ];
+
+      for (const update of updates) {
+        const { error } = await supabase
+          .from('system_settings')
+          .upsert(update, { onConflict: 'key' });
+        if (error) throw error;
+      }
+
+      toast.success('Paramètres sauvegardés avec succès', {
+        description: 'Les modifications sont appliquées immédiatement.'
+      });
+    } catch (e: any) {
+      toast.error('Erreur sauvegarde : ' + e.message);
+    }
   };
 
   const addBlacklistWord = (e: React.KeyboardEvent<HTMLInputElement>) => {

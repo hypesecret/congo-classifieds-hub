@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Heart, Share2, MapPin, Clock, Eye,
   Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown,
@@ -13,13 +13,16 @@ import { getSpecsForCategory } from '@/lib/categorySpecs';
 import { useAuthStore } from '@/stores/authStore';
 import { useListing } from '@/hooks/useListing';
 import { useListings } from '@/hooks/useListings';
-import { Skeleton } from '@/components/ui/skeleton';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [currentImage, setCurrentImage] = useState(0);
   const [descExpanded, setDescExpanded] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [reporting, setReporting] = useState(false);
   const user = useAuthStore((s) => s.user);
 
   const { data: listing, isLoading } = useListing(id);
@@ -64,12 +67,57 @@ const ListingDetail = () => {
 
   const breadcrumbs = [
     { label: 'Accueil', href: '/' },
-    { label: listing.category, href: `/recherche?cat=${listing.category?.toLowerCase()}` },
-    { label: listing.city, href: `/recherche?ville=${listing.city?.toLowerCase()}` },
+    { label: listing.category || 'Toutes les catégories', href: `/recherche?cat=${listing.category_id}` },
+    { label: listing.city, href: `/recherche?ville=${listing.city}` },
   ];
 
   const prevImage = () => setCurrentImage((p) => (p > 0 ? p - 1 : images.length - 1));
   const nextImage = () => setCurrentImage((p) => (p < images.length - 1 ? p + 1 : 0));
+
+  const handleMessage = () => {
+    if (!user) {
+      toast({ title: "Connexion requise", description: "Veuillez vous connecter pour envoyer un message." });
+      return;
+    }
+    navigate(`/messages?listing=${listing.id}&recipient=${listing.user_id}`);
+  };
+
+  const handleReport = async (reason: string) => {
+    if (!user) {
+      toast({ title: "Connexion requise", description: "Veuillez vous connecter pour signaler une annonce." });
+      return;
+    }
+    setReporting(true);
+    try {
+      const { error } = await supabase.from('reports').insert({
+        reporter_id: user.id,
+        listing_id: listing.id,
+        reason: reason,
+        status: 'pending'
+      });
+      if (error) throw error;
+      toast({ title: "Signalement envoyé", description: "Merci de nous aider à maintenir la sécurité de la plateforme." });
+    } catch (err) {
+      toast({ title: "Erreur", description: "Impossible d'envoyer le signalement.", variant: "destructive" });
+    } finally {
+      setReporting(false);
+      setReportOpen(false);
+    }
+  };
+
+  const handleShare = async () => {
+    try {
+      await navigator.share({
+        title: listing.title,
+        text: listing.description,
+        url: window.location.href,
+      });
+    } catch (err) {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href);
+      toast({ title: "Lien copié", description: "Le lien de l'annonce a été copié dans votre presse-papiers." });
+    }
+  };
 
   return (
     <PageWrapper>
@@ -211,8 +259,13 @@ const ListingDetail = () => {
                     <span className="text-14 font-semibold text-foreground">{listing.userName}</span>
                     {listing.isVerified && <BadgeCheck className="w-4 h-4 text-primary" />}
                   </div>
-                  <KYCBadge level={listing.isVerified ? 2 : 0} status={listing.isVerified ? 'approved' : 'none'} />
-                  <p className="text-12 text-text-muted mt-0.5">Membre depuis 2024</p>
+                  <KYCBadge 
+                    level={listing.profiles?.kyc_level || 0} 
+                    status={listing.profiles?.kyc_status === 'approved' ? 'approved' : 'none'} 
+                  />
+                  <p className="text-12 text-text-muted mt-0.5">
+                    Membre depuis {listing.profiles?.created_at ? new Date(listing.profiles.created_at).toLocaleDateString() : '2024'}
+                  </p>
                 </div>
               </div>
               <Link to="#" className="block text-14 text-primary font-medium mt-3">
@@ -233,7 +286,8 @@ const ListingDetail = () => {
                   {['Annonce frauduleuse', 'Contenu inapproprié', 'Doublon', 'Mauvaise catégorie', 'Autre'].map((reason) => (
                     <button
                       key={reason}
-                      onClick={() => setReportOpen(false)}
+                      onClick={() => handleReport(reason)}
+                      disabled={reporting}
                       className="block w-full text-left text-14 text-text-secondary hover:text-danger py-1 transition-colors"
                     >
                       {reason}
@@ -286,10 +340,12 @@ const ListingDetail = () => {
                   {listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}
                 </div>
                 <div className="flex gap-2 mt-5">
-                  <Button variant="outline" className="flex-1 gap-2">
-                    <Phone className="w-4 h-4" /> Appeler
+                  <Button variant="outline" className="flex-1 gap-2" asChild>
+                    <a href={`tel:${listing.profiles?.phone || ''}`}>
+                      <Phone className="w-4 h-4" /> Appeler
+                    </a>
                   </Button>
-                  <Button variant="default" className="flex-1 gap-2">
+                  <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}>
                     <MessageSquare className="w-4 h-4" /> Envoyer un message
                   </Button>
                 </div>
@@ -297,7 +353,7 @@ const ListingDetail = () => {
                   <button className="text-text-muted hover:text-danger transition-colors">
                     <Heart className="w-5 h-5" />
                   </button>
-                  <button className="text-text-muted hover:text-primary transition-colors">
+                  <button onClick={handleShare} className="text-text-muted hover:text-primary transition-colors">
                     <Share2 className="w-5 h-5" />
                   </button>
                 </div>
@@ -314,8 +370,13 @@ const ListingDetail = () => {
                       <span className="text-14 font-semibold text-foreground">{listing.userName}</span>
                       {listing.isVerified && <BadgeCheck className="w-4 h-4 text-primary" />}
                     </div>
-                    <KYCBadge level={listing.isVerified ? 2 : 0} status={listing.isVerified ? 'approved' : 'none'} />
-                    <p className="text-12 text-text-muted mt-0.5">Membre depuis 2024</p>
+                    <KYCBadge 
+                      level={listing.profiles?.kyc_level || 0} 
+                      status={listing.profiles?.kyc_status === 'approved' ? 'approved' : 'none'} 
+                    />
+                    <p className="text-12 text-text-muted mt-0.5">
+                      Membre depuis {listing.profiles?.created_at ? new Date(listing.profiles.created_at).toLocaleDateString() : '2024'}
+                    </p>
                   </div>
                 </div>
                 <Link to="#" className="block text-14 text-primary font-medium mt-3">
@@ -329,10 +390,12 @@ const ListingDetail = () => {
 
       {/* Mobile sticky bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-3 flex gap-3 md:hidden z-40">
-        <Button variant="outline" className="flex-1 gap-2">
-          <Phone className="w-4 h-4" /> Appeler
+        <Button variant="outline" className="flex-1 gap-2" asChild>
+          <a href={`tel:${listing.profiles?.phone || ''}`}>
+            <Phone className="w-4 h-4" /> Appeler
+          </a>
         </Button>
-        <Button variant="default" className="flex-1 gap-2">
+        <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}>
           <MessageSquare className="w-4 h-4" /> Envoyer un message
         </Button>
       </div>

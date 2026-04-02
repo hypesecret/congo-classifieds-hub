@@ -28,15 +28,22 @@ export interface Listing {
   views_count?: number;
   contact_count?: number;
   specs?: Record<string, string | number | boolean>;
+  profiles?: {
+    full_name: string;
+    kyc_level: number;
+    kyc_status: string;
+  };
 }
 
 export interface Category {
-  id?: string;
+  id: string;
   name: string;
   slug: string;
   icon: string;
-  color: string;
-  count: number;
+  color?: string;
+  count?: number;
+  listings_count?: number;
+  is_active?: boolean;
   parent_id?: string;
   subcategories?: Category[];
 }

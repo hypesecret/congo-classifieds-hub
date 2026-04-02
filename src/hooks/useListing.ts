@@ -12,12 +12,14 @@ export const useListing = (id: string | undefined) => {
         .from('listings')
         .select(`
           *,
-          profiles (
+          profiles!listings_user_id_fkey (
             full_name,
             kyc_status,
             avatar_url,
             created_at,
-            response_rate
+            response_rate,
+            kyc_level,
+            phone
           ),
           categories!category_id (
             name,

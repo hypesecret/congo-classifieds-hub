@@ -22,7 +22,7 @@ export const useListings = (options: UseListingsOptions = {}) => {
         .from('listings')
         .select(`
           *,
-          profiles (
+          profiles!listings_user_id_fkey (
             full_name,
             kyc_status,
             avatar_url,

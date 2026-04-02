@@ -9,9 +9,10 @@ import ListingCard from '@/components/listing/ListingCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CATEGORIES, CITIES, formatPrice } from '@/lib/constants';
+import { CATEGORIES as MOCK_CATEGORIES, CITIES, formatPrice } from '@/lib/constants';
 import { getSpecsForCategory } from '@/lib/categorySpecs';
 import { useAuthStore } from '@/stores/authStore';
+import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
 
@@ -23,20 +24,7 @@ const STEPS = [
   { label: 'Aperçu', short: '5' },
 ];
 
-const SUBCATEGORIES: Record<string, string[]> = {
-  immobilier: ['Appartements', 'Maisons', 'Terrains', 'Bureaux', 'Magasins', 'Colocations'],
-  vehicules: ['Voitures', 'Motos', 'Camions', 'Pièces détachées', 'Location'],
-  emploi: ['Offres d\'emploi', 'Demandes d\'emploi', 'Stages', 'Formations'],
-  services: ['Déménagement', 'Réparation', 'Cours particuliers', 'Événements', 'Autres'],
-  electronique: ['Téléphones', 'Ordinateurs', 'Tablettes', 'TV & Audio', 'Accessoires'],
-  'mode-beaute': ['Vêtements femme', 'Vêtements homme', 'Chaussures', 'Bijoux', 'Cosmétiques'],
-  'maison-jardin': ['Meubles', 'Électroménager', 'Décoration', 'Jardinage'],
-  loisirs: ['Sport', 'Musique', 'Jeux', 'Livres', 'Voyages'],
-  agriculture: ['Semences', 'Engrais', 'Matériel', 'Bétail', 'Produits'],
-  animaux: ['Chiens', 'Chats', 'Oiseaux', 'Poissons', 'Accessoires'],
-  'materiaux-btp': ['Ciment', 'Fer', 'Bois', 'Peinture', 'Outillage'],
-  autres: ['Divers'],
-};
+// Subcategories are now fetched from Supabase
 
 const BOOST_PACKS = [
   {
@@ -108,8 +96,11 @@ const CreateListing = () => {
     );
   }
 
-  const categoryObj = CATEGORIES.find((c) => c.slug === selectedCategory);
-  const categorySpecs = getSpecsForCategory(selectedCategory);
+  const { data: mainCategories } = useCategories();
+  const { data: subCategories } = useCategories(selectedCategory || null);
+
+  const categoryObj = mainCategories?.find((c) => c.id === selectedCategory);
+  const categorySpecs = getSpecsForCategory(categoryObj?.slug || '');
 
   const handlePhotoAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -164,9 +155,11 @@ const CreateListing = () => {
         images: imageUrls,
         cover_image: imageUrls[0] || null,
         specs,
+        category_id: selectedCategory,
+        subcategory_id: selectedSubcategory,
         is_sponsored: boostPack !== 'free',
         sponsor_level: boostPack !== 'free' ? boostPack : null,
-      } as any);
+      });
 
       if (error) throw error;
 
@@ -251,31 +244,30 @@ const CreateListing = () => {
               <div className="space-y-6">
                 <h2 className="text-20 font-heading font-bold text-foreground">Dans quelle catégorie ?</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {CATEGORIES.map((cat) => (
+                  {mainCategories?.map((cat) => (
                     <button
-                      key={cat.slug}
-                      onClick={() => { setSelectedCategory(cat.slug); setSelectedSubcategory(''); }}
-                      className={`p-4 rounded-card border transition-all text-left ${selectedCategory === cat.slug ? 'border-primary bg-primary-light shadow-sm' : 'border-border bg-background hover:border-border-strong'}`}
+                      key={cat.id}
+                      onClick={() => { setSelectedCategory(cat.id); setSelectedSubcategory(''); }}
+                      className={`p-4 rounded-card border transition-all text-left ${selectedCategory === cat.id ? 'border-primary bg-primary-light shadow-sm' : 'border-border bg-background hover:border-border-strong'}`}
                     >
                       <div className="w-10 h-10 rounded-category flex items-center justify-center mb-2" style={{ backgroundColor: cat.color }}>
                         <span className="text-16">🏷</span>
                       </div>
                       <p className="text-14 font-medium text-foreground">{cat.name}</p>
-                      <p className="text-11 text-text-muted">{cat.count} annonces</p>
                     </button>
                   ))}
                 </div>
-                {selectedCategory && SUBCATEGORIES[selectedCategory] && (
+                {selectedCategory && subCategories && subCategories.length > 0 && (
                   <div>
                     <p className="text-14 font-medium text-foreground mb-2">Sous-catégorie</p>
                     <div className="flex flex-wrap gap-2">
-                      {SUBCATEGORIES[selectedCategory].map((sub) => (
+                      {subCategories.map((sub) => (
                         <button
-                          key={sub}
-                          onClick={() => setSelectedSubcategory(sub)}
-                          className={`px-4 py-2 rounded-pill text-14 border transition-colors ${selectedSubcategory === sub ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface border-border text-text-secondary hover:border-border-strong'}`}
+                          key={sub.id}
+                          onClick={() => setSelectedSubcategory(sub.id)}
+                          className={`px-4 py-2 rounded-pill text-14 border transition-colors ${selectedSubcategory === sub.id ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface border-border text-text-secondary hover:border-border-strong'}`}
                         >
-                          {sub}
+                          {sub.name}
                         </button>
                       ))}
                     </div>

@@ -1,7 +1,23 @@
+import React, { useState } from 'react';
+import { 
+  CheckCircle, 
+  XCircle, 
+  Search, 
+  Filter, 
+  Eye, 
+  MessageSquare, 
+  ShieldAlert 
+} from 'lucide-react';
 import { useListings } from '@/hooks/useListings';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import KYCBadge from '@/components/auth/KYCBadge';
 
 const REJECTION_REASONS = [
   'Contenu interdit ou dangereux',
@@ -175,8 +191,8 @@ const AdminModeration = () => {
                     
                     <div className="flex items-center gap-4 min-w-0 cursor-pointer" onClick={() => setViewedListing(listing)}>
                       <div className="w-16 h-16 rounded overflow-hidden bg-background shrink-0 border border-border">
-                         {listing.imageUrl ? (
-                           <img src={listing.imageUrl} alt="" className="w-full h-full object-cover" loading="lazy" />
+                         {listing.cover_image ? (
+                           <img src={listing.cover_image} alt="" className="w-full h-full object-cover" loading="lazy" />
                          ) : (
                            <div className="w-full h-full flex items-center justify-center text-text-muted text-10">Sans image</div>
                          )}
@@ -194,19 +210,24 @@ const AdminModeration = () => {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-12 shrink-0">
-                          {listing.userName?.[0]}
+                          {listing.profiles?.full_name?.[0] || '?'}
                         </div>
-                        <p className="text-14 font-medium text-foreground truncate">{listing.userName}</p>
+                        <p className="text-14 font-medium text-foreground truncate">{listing.profiles?.full_name || 'Inconnu'}</p>
                       </div>
                       <div className="mt-1.5 flex items-center">
-                        <KYCBadge level={listing.kyc_level || 0} status={listing.kycStatus === 'approved' ? 'approved' : 'none'} />
+                        <KYCBadge 
+                          level={listing.profiles?.kyc_level || 0} 
+                          status={(listing.profiles?.kyc_status as any) === 'approved' ? 'approved' : 'none'} 
+                        />
                       </div>
                     </div>
 
                     <div className="flex flex-col text-13">
-                      <span className="font-bold text-primary">{formatFCFA(listing.price)}</span>
+                      <span className="font-bold text-primary">{formatFCFA(listing.price || 0)}</span>
                       <span className="text-text-secondary mt-1">{listing.city}</span>
-                      <span className="text-text-muted text-11 mt-0.5">{listing.submittedAt}</span>
+                      <span className="text-text-muted text-11 mt-0.5">
+                        {listing.created_at ? new Date(listing.created_at).toLocaleDateString() : ''}
+                      </span>
                     </div>
 
                     <div className="flex items-center justify-end gap-2 w-24">
@@ -269,8 +290,8 @@ const AdminModeration = () => {
             <div className="flex flex-col md:flex-row h-[80vh] max-h-[700px]">
               {/* Left: Images */}
               <div className="md:w-1/2 bg-black flex items-center justify-center relative">
-                {viewedListing.images[0] ? (
-                  <img src={viewedListing.images[0]} alt="Listing" className="max-w-full max-h-full object-contain" />
+                {viewedListing.cover_image ? (
+                  <img src={viewedListing.cover_image} alt="Listing" className="max-w-full max-h-full object-contain" />
                 ) : (
                   <div className="text-text-muted flex flex-col items-center">
                     <Eye className="w-12 h-12 mb-2 opacity-50" />
@@ -278,7 +299,7 @@ const AdminModeration = () => {
                   </div>
                 )}
                 <div className="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-12 backdrop-blur-md">
-                  1 / {Math.max(1, viewedListing.images.length)}
+                  1 / {Math.max(1, (viewedListing.images?.length || 0))}
                 </div>
               </div>
 
@@ -305,7 +326,9 @@ const AdminModeration = () => {
                       </div>
                       <div>
                         <span className="text-text-muted block text-12 mb-1">Soumise</span>
-                        <span className="font-medium">{viewedListing.submittedAt}</span>
+                        <span className="font-medium">
+                          {viewedListing.created_at ? new Date(viewedListing.created_at).toLocaleDateString() : ''}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -316,12 +339,12 @@ const AdminModeration = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-16">
-                          {viewedListing.userName?.[0]}
+                          {viewedListing.profiles?.full_name?.[0] || '?'}
                         </div>
                         <div>
-                          <p className="font-semibold text-15">{viewedListing.userName}</p>
+                          <p className="font-semibold text-15">{viewedListing.profiles?.full_name || 'Inconnu'}</p>
                           <div className="mt-1">
-                            <KYCBadge level={viewedListing.kyc_level || 0} status={viewedListing.isVerified ? 'approved' : 'none'} />
+                            <KYCBadge level={viewedListing.profiles?.kyc_level || 0} status={viewedListing.profiles?.kyc_status === 'approved' ? 'approved' : 'none'} />
                           </div>
                         </div>
                       </div>

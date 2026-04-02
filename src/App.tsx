@@ -14,6 +14,8 @@ import ListingDetail from "./pages/ListingDetail";
 import CreateListing from "./pages/CreateListing";
 import SearchResults from "./pages/SearchResults";
 import Messages from "./pages/Messages";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
 
 // Admin Imports
 import AdminRoute from "./components/auth/AdminRoute";
@@ -24,6 +26,7 @@ import AdminKYC from "./pages/admin/AdminKYC";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminPayments from "./pages/admin/AdminPayments";
+import AdminCategories from "./pages/admin/AdminCategories";
 import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
@@ -52,6 +55,8 @@ const App = () => (
             <Route path="/deposer" element={<CreateListing />} />
             <Route path="/annonces" element={<SearchResults />} />
             <Route path="/messages" element={<Messages />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
@@ -62,7 +67,7 @@ const App = () => (
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="payments" element={<AdminPayments />} />
-                <Route path="categories" element={<AdminDashboard />} /> {/* Placeholder if no dedicated file yet */}
+                <Route path="categories" element={<AdminCategories />} />
                 <Route path="settings" element={<AdminSettings />} />
               </Route>
             </Route>
