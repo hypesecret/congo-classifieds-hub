@@ -1,0 +1,73 @@
+﻿
+> vite_react_shadcn_ts@0.0.0 build
+> vite build
+
+node.exe : [31mfailed 
+to load config from C:\
+Users\nsana\Downloads\c
+ongo-classifieds-hub-ma
+in\congo-classifieds-hu
+b-main\vite.config.ts[
+39m
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([31mfailed t   
+ o ....config.ts[3    
+9m:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+[31merror during 
+build:
+Error [ERR_MODULE_NOT_F
+OUND]: Cannot find 
+package '@vitejs/plugin
+-react-swc' imported 
+from C:\Users\nsana\Dow
+nloads\congo-classified
+s-hub-main\congo-classi
+fieds-hub-main\vite.con
+fig.ts.timestamp-177477
+5563050-3a5a4e1ef6ffc.m
+js
+    at Object.getPackag
+eJSONURL (node:internal
+/modules/package_json_r
+eader:314:9)
+    at packageResolve (
+node:internal/modules/e
+sm/resolve:767:81)
+    at moduleResolve (n
+ode:internal/modules/es
+m/resolve:853:18)
+    at defaultResolve (
+node:internal/modules/e
+sm/resolve:983:11)
+    at 
+#cachedDefaultResolve (
+node:internal/modules/e
+sm/loader:731:20)
+    at 
+ModuleLoader.resolve (n
+ode:internal/modules/es
+m/loader:708:38)
+    at ModuleLoader.get
+ModuleJobForImport (nod
+e:internal/modules/esm/
+loader:310:38)
+    at ModuleJob._link 
+(node:internal/modules/
+esm/module_job:182:49)
+[39m

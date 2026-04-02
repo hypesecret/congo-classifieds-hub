@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    /* Expat-Congo Brand Colors (HSL) */
+    --primary: 145 100% 30%;
+    --primary-dark: 145 100% 24%;
+    --primary-light: 140 47% 93%;
+    --primary-foreground: 0 0% 100%;
+
+    --accent: 48 100% 50%;
+    --accent-dark: 48 100% 45%;
+    --accent-foreground: 0 0% 7%;
+
+    --danger: 348 83% 47%;
+    --danger-light: 345 100% 97%;
+    --destructive: 348 83% 47%;
+    --destructive-foreground: 0 0% 100%;
+
+    --background: 220 14% 97%;
+    --foreground: 0 0% 7%;
+    --surface: 0 0% 100%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 7%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 7%;
+
+    --secondary: 220 14% 97%;
+    --secondary-foreground: 0 0% 7%;
+
+    --muted: 220 14% 97%;
+    --muted-foreground: 0 0% 60%;
+
+    --border: 0 0% 91%;
+    --border-strong: 0 0% 82%;
+    --input: 0 0% 91%;
+    --ring: 145 100% 30%;
+
+    --sponsored: 27 100% 50%;
+
+    --text-primary: 0 0% 7%;
+    --text-secondary: 0 0% 33%;
+    --text-muted: 0 0% 60%;
+
+    --radius: 0.5rem;
+    --radius-card: 12px;
+    --radius-button: 8px;
+    --radius-input: 8px;
+    --radius-category: 16px;
+    --radius-modal: 20px;
+    --radius-pill: 999px;
+
+    --shadow-xs: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+    --shadow-modal: 0 16px 48px rgba(0,0,0,0.18);
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 145 100% 30%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    line-height: 1.2;
+  }
+
+  p, span, a, li, label, input, textarea, select, button {
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+}
+
+@layer utilities {
+  .text-heading {
+    font-family: var(--font-heading);
+    line-height: 1.2;
+  }
+
+  .text-body {
+    font-family: var(--font-body);
+    line-height: 1.5;
+  }
+
+  .price-format {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: hsl(var(--primary));
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-xs);
+  }
+
+  .shadow-card-hover {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}

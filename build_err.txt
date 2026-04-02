@@ -1,0 +1,58 @@
+﻿[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+node.exe : 
+Browserslist: browsers 
+data (caniuse-lite) is 
+9 months old. Please 
+run:
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Browserslist:   
+  b...ld. Please ru    
+n::String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+  npx update-browsersli
+st-db@latest
+  Why you should do it 
+regularly: https://gith
+ub.com/browserslist/upd
+ate-db#readme
+[32mÔ£ô[39m 2598 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                 [39m[1m[2m    1.13 kB[22m[1m[22m[2m Ôöé gzip:   0.48 kB[22m
+[2mdist/[22m[35massets/index-CrGSWx4z.css  [39m[1m[2m   75.38 kB[22m[1m[22m[2m Ôöé gzip:  13.46 kB[22m
+[2mdist/[22m[36massets/index-CBLzsBPL.js   [39m[1m[33m1,193.64 kB[39m[22m[2m Ôöé gzip: 331.78 kB[22m
+[33m
+(!) Some chunks are 
+larger than 500 kB 
+after minification. 
+Consider:
+- Using dynamic 
+import() to code-split 
+the application
+- Use build.rollupOptio
+ns.output.manualChunks 
+to improve chunking: ht
+tps://rollupjs.org/conf
+iguration-options/#outp
+ut-manualchunks
+- Adjust chunk size 
+limit for this warning 
+via build.chunkSizeWarn
+ingLimit.[39m
+[32mÔ£ô built in 1m 2s[39m

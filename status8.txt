@@ -1,0 +1,110 @@
+﻿On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../../../.android/
+	../../../.antigravity/
+	../../../.bito/
+	../../../.chocolatey/
+	../../../.codeium/
+	../../../.conda/
+	../../../.config/
+	../../../.cursor/
+	../../../.docker/
+	../../../.emulator_console_auth_token
+	../../../.gemini/
+	../../../.gitconfig
+	../../../.gitignore
+	../../../.gradle/
+	../../../.insightface/
+	../../../.lesshst
+	../../../.matplotlib/
+	../../../.node_repl_history
+	../../../.ollama/
+	../../../.rest-client/
+	../../../.vscode/
+	../../../.windsurf/
+	../../../.zenmap/
+	../../../1.20
+	../../../AppData/
+	../../../Apple/
+	../../../Contacts/
+	../../../Developpement/
+	../../
+	../../../Favorites/
+	../../../IntelGraphicsProfiles/
+	../../../Muse Hub/
+	../../../Music/
+	../../../NTUSER.DAT
+	../../../NTUSER.DAT{14477cb6-b56b-11ef-8297-ad5be88d95f6}.TM.blf
+	../../../NTUSER.DAT{14477cb6-b56b-11ef-8297-ad5be88d95f6}.TMContainer00000000000000000001.regtrans-ms
+	../../../NTUSER.DAT{14477cb6-b56b-11ef-8297-ad5be88d95f6}.TMContainer00000000000000000002.regtrans-ms
+	../../../OneDrive/
+	../../../Saved Games/
+	../../../Searches/
+	../../../StudioProjects/
+	../../../Trade Monkey/
+	../../../TrendSpotter/
+	../../../Videos/
+	../../../advanced_ip_scanner_Aliases.bin
+	../../../advanced_ip_scanner_Comments.bin
+	../../../advanced_ip_scanner_MAC.bin
+	../../../configuration-Office2019Enterprise.xml
+	../../../configuration-Office2021Enterprise.xml
+	../../../configuration-Office365-x64.xml
+	../../../configuration-Office365-x86.xml
+	../../../congorides/
+	../../../dictionnaire.txt
+	../../../ecom/
+	../../../edb_languagepack_4.exe
+	../../../edb_mtk.exe
+	../../../edb_npgsql.exe
+	../../../edb_pem_agent.exe
+	../../../edb_pem_agent_8.exe
+	../../../edb_pgagent_pg17.exe
+	../../../edb_pgbouncer.exe
+	../../../edb_pgjdbc.exe
+	../../../edb_psqlodbc.exe
+	../../../edb_sqlprotect_pg16.exe
+	../../../facebook-automation-extension.zip
+	../../../fanbasetool.json
+	../../../fanbasetool/
+	../../../flutter/
+	../../../generateRepoJSON.js
+	../../../investiraupays.com/
+	../../../loganai.jsx
+	../../../mern-ecommerce/
+	../../../mlm-ecommerce/
+	../../../mon_projet/
+	../../../mood/
+	../../../my-agent/.claude/skills/brave-search/
+	../../../my-agent/.pi/skills/brave-search/
+	../../../newapp/
+	../../../ntuser.dat.LOG1
+	../../../ntuser.dat.LOG2
+	../../../ntuser.ini
+	../../../package-lock.json
+	../../../package.json
+	../../../pemhttpd.exe
+	../../../pemhttpd.exe-20241108141942
+	../../../pemhttpd.exe-20241108142022
+	../../../postgresql_16.exe
+	../../../prisma/
+	../../../project-root/
+	../../../project/
+	../../../projet-app/
+	../../../scoop/
+	../../../securepay/
+	../../../setup.exe
+	../../../supabase/
+	../../../tailwind.config.js
+	../../../task_manager/
+	../../../venv/
+	../../../website/
+	../../../worldmonitor/
+
+nothing added to commit but untracked files present (use "git add" to track)
+* main
+origin	https://github.com/hypesecret/congo-classifieds-hub.git (fetch)
+origin	https://github.com/hypesecret/congo-classifieds-hub.git (push)
