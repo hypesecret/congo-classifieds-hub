@@ -16,6 +16,7 @@ import SearchResults from "./pages/SearchResults";
 import Messages from "./pages/Messages";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
+import Profile from "./pages/Profile";
 
 // Admin Imports
 import AdminRoute from "./components/auth/AdminRoute";
@@ -57,6 +58,7 @@ const App = () => (
             <Route path="/messages" element={<Messages />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/profil" element={<Profile />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>

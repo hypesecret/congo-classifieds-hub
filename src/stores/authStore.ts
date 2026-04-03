@@ -10,6 +10,7 @@ interface Profile {
   email: string | null;
   phone: string | null;
   avatar_url: string | null;
+  bio: string | null;
   city: string;
   kyc_status: 'none' | 'phone_verified' | 'pending' | 'approved' | 'rejected';
   kyc_level: number;
