@@ -11,8 +11,8 @@ export const useConversations = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await supabase
-        .from('conversations')
+      const { data, error } = await (supabase
+        .from('conversations') as any)
         .select(`
           *,
           listing:listings (
@@ -27,9 +27,8 @@ export const useConversations = () => {
 
       if (error) throw error;
 
-      // For each conversation, we need the "other user" profile
-      const conversationsWithProfiles = await Promise.all((data || []).map(async (conv) => {
-        const otherUserId = conv.participant_ids.find((id: string) => id !== user.id);
+      const conversationsWithProfiles = await Promise.all((data || []).map(async (conv: any) => {
+        const otherUserId = conv.participant_ids.find((pid: string) => pid !== user.id);
         const { data: profile } = await supabase
           .from('profiles')
           .select('id, full_name, avatar_url, kyc_level, kyc_status')
@@ -38,7 +37,7 @@ export const useConversations = () => {
 
         return {
           ...conv,
-          otherUser: profile || { full_name: 'Utilisateur', kyc_level: 0, kyc_status: 'none' }
+          otherUser: profile || { id: otherUserId, full_name: 'Utilisateur', avatar_url: null, kyc_level: 0, kyc_status: 'none' as const }
         };
       }));
 
@@ -49,8 +48,6 @@ export const useConversations = () => {
 };
 
 export const useConversationMessages = (conversationId: string | null) => {
-  const queryClient = useQueryClient();
-
   return useQuery({
     queryKey: ['messages', conversationId],
     queryFn: async () => {
@@ -85,8 +82,9 @@ export const useSendMessage = () => {
     }) => {
       if (!user) throw new Error("Non authentifié");
 
-      const { data, error } = await supabase
-        .from('messages')
+      // The handle_new_message trigger fills conversation_id automatically
+      const { data, error } = await (supabase
+        .from('messages') as any)
         .insert({
           sender_id: user.id,
           receiver_id: receiverId,
@@ -100,7 +98,7 @@ export const useSendMessage = () => {
       if (error) throw error;
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['conversations'] });
       queryClient.invalidateQueries({ queryKey: ['messages', data.conversation_id] });
     },

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, MessageCircle, CheckCircle2, Shield } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle2, Shield } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,8 +23,8 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_messages')
+      const { error } = await (supabase
+        .from('contact_messages') as any)
         .insert([formData]);
 
       if (error) throw error;
@@ -48,7 +48,6 @@ const Contact = () => {
       
       <main className="pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header Section */}
           <div className="text-center mb-12">
             <h1 className="text-32 md:text-40 font-bold text-foreground font-heading mb-4">Contactez-nous</h1>
             <p className="text-16 text-text-secondary max-w-2xl mx-auto">
@@ -57,7 +56,6 @@ const Contact = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Contact Info */}
             <div className="space-y-6">
               <Card className="border-none shadow-sm bg-primary/5">
                 <CardContent className="p-6">
@@ -91,7 +89,6 @@ const Contact = () => {
                 </CardContent>
               </Card>
 
-              {/* Trust Card */}
               <div className="bg-surface rounded-card border border-border p-6">
                 <h3 className="font-bold text-16 mb-4 flex items-center gap-2">
                   <Shield className="w-5 h-5 text-primary" /> Sécurité & Confiance
@@ -113,7 +110,6 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Contact Form */}
             <div className="lg:col-span-2">
               <Card>
                 <CardContent className="p-8">
