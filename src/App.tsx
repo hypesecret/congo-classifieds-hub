@@ -16,6 +16,7 @@ import SearchResults from "./pages/SearchResults";
 import Messages from "./pages/Messages";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
+import Profile from "./pages/Profile";
 
 // Admin Imports
 import AdminRoute from "./components/auth/AdminRoute";
