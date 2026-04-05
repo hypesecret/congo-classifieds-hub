@@ -121,7 +121,7 @@ const CreateListing = () => {
 
   const canProceed = () => {
     switch (step) {
-      case 1: return !!selectedCategory && !!selectedSubcategory;
+      case 1: return !!selectedCategory;
       case 2: return title.length >= 5;
       case 3: return photos.length >= 1;
       case 4: return (!!price || isFree) && !!city;

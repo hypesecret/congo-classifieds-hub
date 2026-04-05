@@ -126,8 +126,8 @@ const Header = () => {
                         <button onClick={() => { navigate('/messages'); setUserMenuOpen(false); }} className="w-full text-left px-4 py-2 text-14 text-foreground hover:bg-primary-light transition-colors flex items-center gap-2">
                           <MessageSquare className="w-4 h-4" /> Messages
                         </button>
-                        <button onClick={() => { navigate('/annonces'); setUserMenuOpen(false); }} className="w-full text-left px-4 py-2 text-14 text-foreground hover:bg-primary-light transition-colors flex items-center gap-2">
-                          <User className="w-4 h-4" /> Mes annonces
+                        <button onClick={() => { navigate('/profil'); setUserMenuOpen(false); }} className="w-full text-left px-4 py-2 text-14 text-foreground hover:bg-primary-light transition-colors flex items-center gap-2">
+                          <User className="w-4 h-4" /> Mon profil
                         </button>
                         {(profile?.kyc_level ?? 0) < 2 && (
                           <button
@@ -228,8 +228,8 @@ const Header = () => {
                 <Button variant="ghost" className="w-full justify-start text-text-secondary" onClick={() => { navigate('/messages'); setMobileMenuOpen(false); }}>
                   <MessageSquare className="w-4 h-4 mr-2" /> Messages
                 </Button>
-                <Button variant="ghost" className="w-full justify-start text-text-secondary" onClick={() => { navigate('/annonces'); setMobileMenuOpen(false); }}>
-                  <User className="w-4 h-4 mr-2" /> Mes annonces
+                <Button variant="ghost" className="w-full justify-start text-text-secondary" onClick={() => { navigate('/profil'); setMobileMenuOpen(false); }}>
+                  <User className="w-4 h-4 mr-2" /> Mon profil
                 </Button>
                 {(profile?.kyc_level ?? 0) < 2 && (
                   <Button
