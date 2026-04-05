@@ -39,7 +39,8 @@ const AdminModeration = () => {
   const [selectedListings, setSelectedListings] = useState<Set<string>>(new Set());
   const [searchQuery, setSearchQuery] = useState('');
   
-  const { data: listings, isLoading } = useListings({ status: activeTab });
+  const statusMap: Record<string, string> = { pending: 'pending_moderation', approved: 'active', rejected: 'rejected', reported: 'reported' };
+  const { data: listings, isLoading } = useListings({ status: statusMap[activeTab] || activeTab });
   const pendingListings = activeTab === 'pending' ? listings || [] : [];
 
   // Modal states

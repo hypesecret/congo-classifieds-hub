@@ -54,12 +54,6 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ requireAdmin = false }) => {
     );
   }
 
-  // TEMPORAIRE : Contournement pour le développement local
-  // Permet de voir l'interface admin sans avoir à configurer Supabase
-  if (import.meta.env.DEV) {
-    return <Outlet />;
-  }
-
   if (!user) {
     // Save intended location to redirect back after login later if desired
     return <Navigate to="/" state={{ from: location }} replace />;

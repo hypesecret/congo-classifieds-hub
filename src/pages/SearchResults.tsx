@@ -96,8 +96,8 @@ const SearchResults = () => {
               <input
                 type="radio"
                 name="category"
-                checked={selectedCategory === cat.slug}
-                onChange={() => setSelectedCategory(cat.slug)}
+                checked={selectedCategory === cat.id}
+                onChange={() => setSelectedCategory(cat.id)}
                 className="w-4 h-4 rounded-full border-border text-primary focus:ring-primary"
               />
               <span className="text-14 text-text-secondary flex-1">{cat.name}</span>

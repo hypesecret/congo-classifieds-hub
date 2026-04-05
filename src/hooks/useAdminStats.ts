@@ -17,7 +17,7 @@ export const useAdminStats = () => {
       const { count: pendingModeration, error: pendingError } = await supabase
         .from('listings')
         .select('*', { count: 'exact', head: true })
-        .eq('status', 'pending');
+        .eq('status', 'pending_moderation');
 
       if (pendingError) throw pendingError;
 

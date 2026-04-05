@@ -70,7 +70,7 @@ const Messages = () => {
         <div className="container mx-auto py-16 text-center max-w-lg">
           <h1 className="text-24 font-heading font-bold text-foreground mb-4">Vos messages</h1>
           <p className="text-14 text-text-muted mb-6">Connectez-vous pour accéder à vos conversations.</p>
-          <Button variant="default" size="lg" onClick={() => navigate('/login')}>Se connecter</Button>
+          <Button variant="default" size="lg" onClick={() => useAuthStore.getState().setShowLoginModal(true)}>Se connecter</Button>
         </div>
       </PageWrapper>
     );
