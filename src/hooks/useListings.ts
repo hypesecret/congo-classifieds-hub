@@ -12,6 +12,9 @@ interface UseListingsOptions {
   maxPrice?: number;
   sortBy?: string;
   status?: string;
+  userId?: string;
+  page?: number;
+  pageSize?: number;
 }
 
 export const useListings = (options: UseListingsOptions = {}) => {
@@ -43,6 +46,10 @@ export const useListings = (options: UseListingsOptions = {}) => {
 
       if (options.isSponsored !== undefined) {
         query = query.eq('is_sponsored', options.isSponsored);
+      }
+
+      if (options.userId) {
+        query = query.eq('user_id', options.userId);
       }
 
       if (options.query) {
