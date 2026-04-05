@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/authStore";
 import RegisterModal from "@/components/auth/RegisterModal";
 import LoginModal from "@/components/auth/LoginModal";
 import KYCVerificationModal from "@/components/auth/KYCVerificationModal";
+import BottomNav from "@/components/navigation/BottomNav";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ListingDetail from "./pages/ListingDetail";
@@ -17,6 +18,9 @@ import Messages from "./pages/Messages";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
 import Profile from "./pages/Profile";
+import CGU from "./pages/CGU";
+import Confidentialite from "./pages/Confidentialite";
+import ResetPassword from "./pages/ResetPassword";
 
 // Admin Imports
 import AdminRoute from "./components/auth/AdminRoute";
@@ -30,7 +34,14 @@ import AdminPayments from "./pages/admin/AdminPayments";
 import AdminCategories from "./pages/admin/AdminCategories";
 import AdminSettings from "./pages/admin/AdminSettings";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 3 * 60 * 1000,
+      gcTime: 10 * 60 * 1000,
+    },
+  },
+});
 
 const AuthInitializer = ({ children }: { children: React.ReactNode }) => {
   const initialize = useAuthStore((s) => s.initialize);
@@ -59,6 +70,9 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/profil" element={<Profile />} />
+            <Route path="/cgu" element={<CGU />} />
+            <Route path="/confidentialite" element={<Confidentialite />} />
+            <Route path="/auth/reset" element={<ResetPassword />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
@@ -76,6 +90,7 @@ const App = () => (
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <BottomNav />
         </AuthInitializer>
       </BrowserRouter>
     </TooltipProvider>

@@ -11,7 +11,7 @@ export const useNotifications = () => {
     queryKey: ['notifications', user?.id],
     queryFn: async () => {
       if (!user) return [];
-      const { data, error } = await (supabase.from('notifications') as any)
+      const { data, error } = await (supabase as any).from('notifications')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
@@ -24,7 +24,6 @@ export const useNotifications = () => {
 
   const unreadCount = (query.data || []).filter((n: any) => !n.is_read).length;
 
-  // Realtime subscription
   useEffect(() => {
     if (!user) return;
     const channel = supabase
@@ -33,7 +32,6 @@ export const useNotifications = () => {
         queryClient.invalidateQueries({ queryKey: ['notifications'] });
       })
       .subscribe();
-
     return () => { supabase.removeChannel(channel); };
   }, [user, queryClient]);
 
@@ -44,7 +42,7 @@ export const useMarkNotificationRead = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (id: string) => {
-      await (supabase.from('notifications') as any).update({ is_read: true }).eq('id', id);
+      await (supabase as any).from('notifications').update({ is_read: true }).eq('id', id);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
   });
@@ -56,7 +54,7 @@ export const useMarkAllNotificationsRead = () => {
   return useMutation({
     mutationFn: async () => {
       if (!user) return;
-      await (supabase.from('notifications') as any).update({ is_read: true }).eq('user_id', user.id).eq('is_read', false);
+      await (supabase as any).from('notifications').update({ is_read: true }).eq('user_id', user.id).eq('is_read', false);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['notifications'] }),
   });
