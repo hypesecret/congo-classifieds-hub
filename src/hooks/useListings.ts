@@ -72,6 +72,12 @@ export const useListings = (options: UseListingsOptions = {}) => {
         query = query.limit(options.limit);
       }
 
+      if (options.page !== undefined && options.pageSize) {
+        const from = options.page * options.pageSize;
+        const to = from + options.pageSize - 1;
+        query = query.range(from, to);
+      }
+
       // Sorting
       if (options.sortBy === 'price_asc') {
         query = query.order('price', { ascending: true });
