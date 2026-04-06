@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   linkTo?: string;
+  variant?: 'dark' | 'light';
 }
 
 const sizes = {
@@ -11,8 +12,9 @@ const sizes = {
   lg: { icon: 48, text: 'text-28' },
 };
 
-const Logo = ({ size = 'md', linkTo = '/' }: LogoProps) => {
+const Logo = ({ size = 'md', linkTo, variant = 'dark' }: LogoProps) => {
   const s = sizes[size];
+  const nameColor = variant === 'light' ? 'text-primary-foreground' : 'text-foreground';
 
   const content = (
     <span className="flex items-center gap-2">
@@ -22,7 +24,7 @@ const Logo = ({ size = 'md', linkTo = '/' }: LogoProps) => {
         <path d="M12 36C12 36 16 33 24 33C32 33 36 36 36 36" stroke="white" strokeWidth="2.5" strokeLinecap="round" opacity="0.7" />
       </svg>
       <span className={`font-heading font-bold ${s.text} leading-none`}>
-        <span className="text-foreground">Expat</span>
+        <span className={nameColor}>Expat</span>
         <span className="text-primary">-Congo</span>
       </span>
     </span>
