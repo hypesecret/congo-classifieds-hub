@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Heart, Share2, MapPin, Clock, Eye,
-  Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown, Maximize2,
+  Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown, Maximize2, X,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
