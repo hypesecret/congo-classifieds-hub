@@ -1,0 +1,10 @@
+{
+  "name": "Expat-Congo",
+  "short_name": "Expat",
+  "description": "Petites annonces au Congo-Brazzaville",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#009739",
+  "background_color": "#009739",
+  "icons": []
+}

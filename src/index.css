@@ -9,50 +9,55 @@
     --font-heading: 'Poppins', sans-serif;
     --font-body: 'Inter', sans-serif;
 
-    /* Expat-Congo Brand Colors (HSL) */
     --primary: 145 100% 30%;
     --primary-dark: 145 100% 24%;
     --primary-light: 140 47% 93%;
     --primary-foreground: 0 0% 100%;
 
-    --accent: 48 100% 50%;
-    --accent-dark: 48 100% 45%;
-    --accent-foreground: 0 0% 7%;
+    --accent: 24 100% 50%;
+    --accent-dark: 24 100% 45%;
+    --accent-foreground: 0 0% 100%;
 
-    --danger: 348 83% 47%;
-    --danger-light: 345 100% 97%;
-    --destructive: 348 83% 47%;
+    --danger: 0 84% 60%;
+    --danger-light: 0 100% 97%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
+    --success: 142 71% 45%;
+    --warning: 36 100% 50%;
+
     --background: 220 14% 97%;
-    --foreground: 0 0% 7%;
+    --foreground: 0 0% 5%;
     --surface: 0 0% 100%;
+    --surface-2: 220 14% 97%;
+    --surface-3: 228 12% 93%;
 
     --card: 0 0% 100%;
-    --card-foreground: 0 0% 7%;
+    --card-foreground: 0 0% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+    --popover-foreground: 0 0% 5%;
 
     --secondary: 220 14% 97%;
-    --secondary-foreground: 0 0% 7%;
+    --secondary-foreground: 0 0% 5%;
 
     --muted: 220 14% 97%;
     --muted-foreground: 0 0% 60%;
 
-    --border: 0 0% 91%;
+    --border: 220 13% 91%;
     --border-strong: 0 0% 82%;
-    --input: 0 0% 91%;
+    --input: 220 13% 91%;
     --ring: 145 100% 30%;
 
-    --sponsored: 27 100% 50%;
+    --sponsored: 24 100% 50%;
+    --badge-new: 24 100% 50%;
 
-    --text-primary: 0 0% 7%;
+    --text-primary: 0 0% 5%;
     --text-secondary: 0 0% 33%;
     --text-muted: 0 0% 60%;
 
     --radius: 0.5rem;
-    --radius-card: 12px;
+    --radius-card: 16px;
     --radius-button: 8px;
     --radius-input: 8px;
     --radius-category: 16px;
@@ -60,9 +65,9 @@
     --radius-pill: 999px;
 
     --shadow-xs: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-sm: 0 2px 12px rgba(0,0,0,0.07);
     --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
     --shadow-modal: 0 16px 48px rgba(0,0,0,0.18);
 
     --sidebar-background: 0 0% 98%;
@@ -73,6 +78,30 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 145 100% 30%;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
+    --surface: 0 0% 10%;
+    --surface-2: 0 0% 14%;
+    --surface-3: 0 0% 18%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
+    --secondary: 0 0% 14%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 60%;
+    --border: 0 0% 20%;
+    --border-strong: 0 0% 30%;
+    --input: 0 0% 20%;
+    --text-primary: 0 0% 95%;
+    --text-secondary: 0 0% 70%;
+    --text-muted: 0 0% 50%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 90%;
   }
 }
 
@@ -114,11 +143,15 @@
   }
 
   .shadow-card {
-    box-shadow: var(--shadow-xs);
+    box-shadow: var(--shadow-sm);
   }
 
   .shadow-card-hover {
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-lg);
   }
 
   .hide-scrollbar::-webkit-scrollbar {
