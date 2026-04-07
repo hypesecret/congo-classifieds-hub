@@ -22,7 +22,7 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      const { error } = await (supabase as any)
+      const { error } = await supabase
         .from('contact_messages')
         .insert([formData]);
 

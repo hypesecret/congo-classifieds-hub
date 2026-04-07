@@ -4,12 +4,12 @@ import Logo from '@/components/ui/Logo';
 
 const footerLinks = {
   categories: [
-    { label: 'Immobilier', href: '/annonces?cat=immobilier' },
-    { label: 'Véhicules', href: '/annonces?cat=vehicules' },
-    { label: 'Emploi', href: '/annonces?cat=emploi' },
-    { label: 'Électronique', href: '/annonces?cat=electronique' },
-    { label: 'Services', href: '/annonces?cat=services' },
-    { label: 'Mode & Beauté', href: '/annonces?cat=mode' },
+    { label: 'Immobilier', href: '/annonces?cat=6f160b12-52cf-4153-93fd-3eac211cc33d' },
+    { label: 'Véhicules', href: '/annonces?cat=c4238179-bdba-4053-88f5-858c83af14d0' },
+    { label: 'Emploi', href: '/annonces?cat=7f40b21b-dead-4ad4-a12e-5bb6ff902f23' },
+    { label: 'Électronique', href: '/annonces?cat=f7f70661-afb8-4429-aa66-b090136ae88b' },
+    { label: 'Services', href: '/annonces?cat=8d280353-473a-4c0b-a70e-5f9b8948676a' },
+    { label: 'Mode & Beauté', href: '/annonces?cat=34b7a3a5-ba7f-429d-984c-b49164b86ba9' },
   ],
   useful: [
     { label: 'Conditions Générales', href: '/cgu' },

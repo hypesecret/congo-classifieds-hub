@@ -101,14 +101,19 @@ const RegisterModal = () => {
 
   const strength = getPasswordStrength(password);
 
+  const [signupSuccess, setSignupSuccess] = useState(false);
+
   const handleFinalSubmit = async () => {
     if (!fullName || !password || password.length < 8 || !acceptCGU) return;
+    if (!email) {
+      toast({ title: 'Email requis', description: 'Veuillez renseigner un email valide pour créer votre compte.', variant: 'destructive' });
+      return;
+    }
     setLoading(true);
     try {
-      const emailToUse = email || `${phone.replace(/\s/g, '')}@expat-congo.com`;
-      const { error } = await signUpWithEmail(emailToUse, password, {
+      const { error } = await signUpWithEmail(email, password, {
         full_name: fullName,
-        phone: `+242${phone.replace(/\s/g, '')}`,
+        phone: phone ? `+242${phone.replace(/\s/g, '')}` : '',
         city,
       });
       if (error) {
@@ -118,11 +123,7 @@ const RegisterModal = () => {
           variant: 'destructive',
         });
       } else {
-        toast({
-          title: `Bienvenue ${fullName.split(' ')[0]} !`,
-          description: 'Votre compte est prêt.',
-        });
-        setShowRegisterModal(false);
+        setSignupSuccess(true);
       }
     } finally {
       setLoading(false);

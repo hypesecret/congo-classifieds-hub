@@ -86,9 +86,9 @@ const Profile = () => {
     try {
       const compressed = await compressImage(file, 200, 0.9);
       const path = `${user.id}/avatar-${Date.now()}.jpg`;
-      const { error } = await supabase.storage.from('listing-images').upload(path, compressed);
+      const { error } = await supabase.storage.from('avatars').upload(path, compressed);
       if (error) throw error;
-      const { data: urlData } = supabase.storage.from('listing-images').getPublicUrl(path);
+      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path);
       await supabase.from('profiles').update({ avatar_url: urlData.publicUrl }).eq('user_id', user.id);
       toast({ title: 'Photo mise à jour' });
       useAuthStore.getState().fetchProfile(user.id);
