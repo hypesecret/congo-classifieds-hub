@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Heart, Settings, Package, LogOut, Camera, MapPin, Phone, Mail, Edit2, Lock, Sun, Moon, Trash2 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
