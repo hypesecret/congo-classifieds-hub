@@ -11,8 +11,8 @@ export const useConversations = () => {
     queryFn: async () => {
       if (!user) return [];
 
-      const { data, error } = await (supabase
-        .from('conversations') as any)
+      const { data, error } = await supabase
+        .from('conversations')
         .select(`
           *,
           listing:listings (
