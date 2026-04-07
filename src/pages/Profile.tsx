@@ -42,9 +42,35 @@ const Profile = () => {
   const { data: myListings, isLoading: loadingListings } = useListings({ userId: user?.id, status: statusFilter });
   const { data: favoriteIds } = useFavorites();
 
-  // Get favorite listings
-  const { data: favListings, isLoading: loadingFavs } = useListings({ limit: 50 });
-  const favoriteListings = favListings?.filter(l => favoriteIds?.includes(l.id)) || [];
+  // Optimized: fetch only favorited listings via their IDs
+  const { data: favListings, isLoading: loadingFavs } = useQuery({
+    queryKey: ['favorite-listings', favoriteIds],
+    queryFn: async () => {
+      if (!favoriteIds || favoriteIds.length === 0) return [];
+      const { data, error } = await supabase
+        .from('listings')
+        .select(`*, profiles!listings_user_id_fkey(full_name, kyc_status, avatar_url, kyc_level), categories!category_id(name, slug)`)
+        .in('id', favoriteIds)
+        .eq('status', 'active');
+      if (error) throw error;
+      return (data || []).map((item: any) => ({
+        id: item.id, user_id: item.user_id, title: item.title, description: item.description,
+        price: item.price || 0, is_free: item.is_free, isFree: item.is_free, city: item.city,
+        neighborhood: item.neighborhood, category: item.categories?.name || 'Autres',
+        category_id: item.category_id, imageUrl: item.cover_image || '', cover_image: item.cover_image,
+        images: item.images, is_sponsored: item.is_sponsored, isSponsored: item.is_sponsored || false,
+        sponsor_level: item.sponsor_level, created_at: item.created_at,
+        createdAt: new Date(item.created_at).toLocaleDateString(),
+        userName: item.profiles?.full_name || 'Utilisateur',
+        isVerified: item.profiles?.kyc_status === 'approved',
+        price_negotiable: item.price_negotiable, priceNegotiable: item.price_negotiable || false,
+        status: item.status, views_count: item.views_count, contact_count: item.contact_count,
+        specs: item.specs,
+      }));
+    },
+    enabled: !!favoriteIds && favoriteIds.length > 0,
+  });
+  const favoriteListings = favListings || [];
 
   const handleSave = async () => {
     if (!user) return;

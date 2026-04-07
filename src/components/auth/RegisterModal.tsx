@@ -135,6 +135,30 @@ const RegisterModal = () => {
     setShowLoginModal(true);
   };
 
+  if (signupSuccess) {
+    return (
+      <Dialog open={showRegisterModal} onOpenChange={setShowRegisterModal}>
+        <DialogContent className="sm:max-w-[480px] p-0 rounded-modal shadow-modal border-0 gap-0 overflow-hidden">
+          <div className="px-6 py-10 text-center">
+            <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-5">
+              <span className="text-32">📧</span>
+            </div>
+            <h2 className="text-heading text-20 font-bold text-foreground mb-3">Vérifiez votre email</h2>
+            <p className="text-14 text-text-secondary mb-2">
+              Un email de confirmation a été envoyé à <strong>{email}</strong>
+            </p>
+            <p className="text-12 text-text-muted mb-6">
+              Cliquez sur le lien dans l'email pour activer votre compte. Vérifiez vos spams si vous ne le trouvez pas.
+            </p>
+            <Button variant="outline" onClick={() => { setShowRegisterModal(false); setSignupSuccess(false); }}>
+              Fermer
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
   return (
     <Dialog open={showRegisterModal} onOpenChange={setShowRegisterModal}>
       <DialogContent className="sm:max-w-[480px] p-0 rounded-modal shadow-modal border-0 gap-0 overflow-hidden">
