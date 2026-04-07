@@ -101,14 +101,19 @@ const RegisterModal = () => {
 
   const strength = getPasswordStrength(password);
 
+  const [signupSuccess, setSignupSuccess] = useState(false);
+
   const handleFinalSubmit = async () => {
     if (!fullName || !password || password.length < 8 || !acceptCGU) return;
+    if (!email) {
+      toast({ title: 'Email requis', description: 'Veuillez renseigner un email valide pour créer votre compte.', variant: 'destructive' });
+      return;
+    }
     setLoading(true);
     try {
-      const emailToUse = email || `${phone.replace(/\s/g, '')}@expat-congo.com`;
-      const { error } = await signUpWithEmail(emailToUse, password, {
+      const { error } = await signUpWithEmail(email, password, {
         full_name: fullName,
-        phone: `+242${phone.replace(/\s/g, '')}`,
+        phone: phone ? `+242${phone.replace(/\s/g, '')}` : '',
         city,
       });
       if (error) {
@@ -118,11 +123,7 @@ const RegisterModal = () => {
           variant: 'destructive',
         });
       } else {
-        toast({
-          title: `Bienvenue ${fullName.split(' ')[0]} !`,
-          description: 'Votre compte est prêt.',
-        });
-        setShowRegisterModal(false);
+        setSignupSuccess(true);
       }
     } finally {
       setLoading(false);
@@ -133,6 +134,30 @@ const RegisterModal = () => {
     setShowRegisterModal(false);
     setShowLoginModal(true);
   };
+
+  if (signupSuccess) {
+    return (
+      <Dialog open={showRegisterModal} onOpenChange={setShowRegisterModal}>
+        <DialogContent className="sm:max-w-[480px] p-0 rounded-modal shadow-modal border-0 gap-0 overflow-hidden">
+          <div className="px-6 py-10 text-center">
+            <div className="w-16 h-16 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-5">
+              <span className="text-32">📧</span>
+            </div>
+            <h2 className="text-heading text-20 font-bold text-foreground mb-3">Vérifiez votre email</h2>
+            <p className="text-14 text-text-secondary mb-2">
+              Un email de confirmation a été envoyé à <strong>{email}</strong>
+            </p>
+            <p className="text-12 text-text-muted mb-6">
+              Cliquez sur le lien dans l'email pour activer votre compte. Vérifiez vos spams si vous ne le trouvez pas.
+            </p>
+            <Button variant="outline" onClick={() => { setShowRegisterModal(false); setSignupSuccess(false); }}>
+              Fermer
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={showRegisterModal} onOpenChange={setShowRegisterModal}>

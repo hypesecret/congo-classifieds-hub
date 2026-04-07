@@ -122,9 +122,9 @@ const CreateListing = () => {
   const canProceed = () => {
     switch (step) {
       case 1: return !!selectedCategory;
-      case 2: return title.length >= 5;
+      case 2: return title.length >= 5 && description.length >= 20;
       case 3: return photos.length >= 1;
-      case 4: return (!!price || isFree) && !!city;
+      case 4: return (isFree || (!!price && parseInt(price) > 0)) && !!city;
       default: return true;
     }
   };
