@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import CGU from "./pages/CGU";
 import Confidentialite from "./pages/Confidentialite";
 import ResetPassword from "./pages/ResetPassword";
+import SellerProfile from "./pages/SellerProfile";
 
 // Admin Imports
 import AdminRoute from "./components/auth/AdminRoute";
@@ -73,6 +74,7 @@ const App = () => (
             <Route path="/cgu" element={<CGU />} />
             <Route path="/confidentialite" element={<Confidentialite />} />
             <Route path="/auth/reset" element={<ResetPassword />} />
+            <Route path="/vendeur/:userId" element={<SellerProfile />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>

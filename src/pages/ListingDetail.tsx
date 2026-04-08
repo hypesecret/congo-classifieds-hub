@@ -205,7 +205,7 @@ const ListingDetail = () => {
                   <KYCBadge level={listing.profiles?.kyc_level || 0} status={listing.profiles?.kyc_status === 'approved' ? 'approved' : 'none'} />
                 </div>
               </div>
-              <Link to={`/annonces?userId=${listing.user_id}`} className="block text-14 text-primary font-medium mt-3">Voir toutes ses annonces →</Link>
+              <Link to={`/vendeur/${listing.user_id}`} className="block text-14 text-primary font-medium mt-3">Voir le profil du vendeur →</Link>
             </div>
 
             {/* Share + Report */}
@@ -273,7 +273,7 @@ const ListingDetail = () => {
                     <KYCBadge level={listing.profiles?.kyc_level || 0} status={listing.profiles?.kyc_status === 'approved' ? 'approved' : 'none'} />
                   </div>
                 </div>
-                <Link to={`/annonces?userId=${listing.user_id}`} className="block text-14 text-primary font-medium mt-3 hover:underline">Voir toutes ses annonces →</Link>
+                <Link to={`/vendeur/${listing.user_id}`} className="block text-14 text-primary font-medium mt-3 hover:underline">Voir le profil du vendeur →</Link>
               </div>
             </div>
           </div>
