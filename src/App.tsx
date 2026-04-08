@@ -21,6 +21,7 @@ import Profile from "./pages/Profile";
 import CGU from "./pages/CGU";
 import Confidentialite from "./pages/Confidentialite";
 import ResetPassword from "./pages/ResetPassword";
+import SellerProfile from "./pages/SellerProfile";
 
 // Admin Imports
 import AdminRoute from "./components/auth/AdminRoute";
