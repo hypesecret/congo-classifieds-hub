@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/authStore";
 import PageWrapper from "@/components/layout/PageWrapper";
 import ListingCard from "@/components/listing/ListingCard";
 import ListingCardSkeleton from "@/components/listing/ListingCardSkeleton";
-import { KYCBadge } from "@/components/auth/KYCBadge";
+import KYCBadge from "@/components/auth/KYCBadge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";

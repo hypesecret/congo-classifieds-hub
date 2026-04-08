@@ -74,6 +74,7 @@ const App = () => (
             <Route path="/cgu" element={<CGU />} />
             <Route path="/confidentialite" element={<Confidentialite />} />
             <Route path="/auth/reset" element={<ResetPassword />} />
+            <Route path="/vendeur/:userId" element={<SellerProfile />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={<AdminRoute />}>
