@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Heart, Share2, MapPin, Clock, Eye,
   Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown, Maximize2, X,
+  CheckCircle2, RefreshCw, Trash2, EyeOff,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
@@ -15,6 +16,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useListing } from '@/hooks/useListing';
 import { useListings } from '@/hooks/useListings';
 import { useToggleFavorite, useFavorites } from '@/hooks/useFavorites';
+import { useMarkSold, useRenewListing, useDeleteListing, useIncrementViews } from '@/hooks/useListingActions';
 import { useSEO } from '@/hooks/useSEO';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -27,12 +29,41 @@ const ListingDetail = () => {
   const [reportOpen, setReportOpen] = useState(false);
   const [reporting, setReporting] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [showPhoneNumber, setShowPhoneNumber] = useState(false);
   const user = useAuthStore((s) => s.user);
+  const viewIncrementedRef = useRef<string | null>(null);
 
   const { data: listing, isLoading } = useListing(id);
   const { data: similarListingsData } = useListings({ category: listing?.category_id, limit: 4 });
   const { data: favoriteIds } = useFavorites();
   const { mutate: toggleFavorite } = useToggleFavorite();
+  const { mutate: incrementViews } = useIncrementViews();
+  const { mutate: markSold } = useMarkSold();
+  const { mutate: renewListing } = useRenewListing();
+  const { mutate: deleteListing } = useDeleteListing();
+
+  const isOwner = !!(user && listing && user.id === listing.user_id);
+  const phoneVisible = (listing as any)?.phone_visible !== false;
+  const sellerPhone = (listing as any)?.profiles?.phone;
+
+  // Increment views once per listing per session (skip owners)
+  useEffect(() => {
+    if (!listing || !id) return;
+    if (viewIncrementedRef.current === id) return;
+    if (isOwner) return;
+    viewIncrementedRef.current = id;
+    incrementViews(id);
+  }, [id, listing, isOwner, incrementViews]);
+
+  const handleMarkSold = () => {
+    if (!listing || !confirm('Marquer cette annonce comme vendue ?')) return;
+    markSold(listing.id);
+  };
+  const handleRenew = () => listing && renewListing(listing.id);
+  const handleDelete = () => {
+    if (!listing || !confirm('Supprimer définitivement cette annonce ?')) return;
+    deleteListing(listing.id, { onSuccess: () => navigate('/profil') });
+  };
 
   const similarListings = similarListingsData?.filter(l => l.id !== id) || [];
   const isFavorited = favoriteIds?.includes(id || '') || false;
@@ -251,14 +282,48 @@ const ListingDetail = () => {
                   <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {listing.views_count || 0} vues</span>
                 </div>
                 <div className="flex items-center gap-2 mt-3 text-14 text-muted-foreground"><MapPin className="w-4 h-4 text-primary" />{listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}</div>
-                <div className="flex gap-2 mt-5">
-                  <Button variant="outline" className="flex-1 gap-2" asChild><a href={`tel:${listing.profiles?.phone || ''}`}><Phone className="w-4 h-4" /> Appeler</a></Button>
-                  <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}><MessageSquare className="w-4 h-4" /> Message</Button>
-                </div>
-                <div className="flex justify-center gap-4 mt-3">
-                  <button onClick={handleFavorite} className="text-muted-foreground hover:text-danger transition-colors"><Heart className={`w-5 h-5 ${isFavorited ? 'fill-danger text-danger' : ''}`} /></button>
-                  <button onClick={handleShare} className="text-muted-foreground hover:text-primary transition-colors"><Share2 className="w-5 h-5" /></button>
-                </div>
+                {isOwner ? (
+                  <div className="space-y-2 mt-5">
+                    <div className="flex gap-2">
+                      <Button variant="outline" className="flex-1 gap-2" onClick={handleMarkSold} disabled={listing.status === 'sold'}>
+                        <CheckCircle2 className="w-4 h-4" /> {listing.status === 'sold' ? 'Vendue' : 'Marquer vendue'}
+                      </Button>
+                      {listing.status === 'expired' || listing.status === 'sold' ? (
+                        <Button variant="default" className="flex-1 gap-2" onClick={handleRenew}>
+                          <RefreshCw className="w-4 h-4" /> Renouveler
+                        </Button>
+                      ) : null}
+                    </div>
+                    <Button variant="ghost" className="w-full gap-2 text-danger" onClick={handleDelete}>
+                      <Trash2 className="w-4 h-4" /> Supprimer
+                    </Button>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex gap-2 mt-5">
+                      {phoneVisible && sellerPhone ? (
+                        showPhoneNumber ? (
+                          <Button variant="outline" className="flex-1 gap-2" asChild>
+                            <a href={`tel:${sellerPhone}`}><Phone className="w-4 h-4" /> {sellerPhone}</a>
+                          </Button>
+                        ) : (
+                          <Button variant="outline" className="flex-1 gap-2" onClick={() => setShowPhoneNumber(true)}>
+                            <Phone className="w-4 h-4" /> Voir le numéro
+                          </Button>
+                        )
+                      ) : (
+                        <Button variant="outline" className="flex-1 gap-2" disabled>
+                          <EyeOff className="w-4 h-4" /> Numéro masqué
+                        </Button>
+                      )}
+                      <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}><MessageSquare className="w-4 h-4" /> Message</Button>
+                    </div>
+                    <div className="flex justify-center gap-4 mt-3">
+                      <button onClick={handleFavorite} className="text-muted-foreground hover:text-danger transition-colors"><Heart className={`w-5 h-5 ${isFavorited ? 'fill-danger text-danger' : ''}`} /></button>
+                      <button onClick={handleShare} className="text-muted-foreground hover:text-primary transition-colors"><Share2 className="w-5 h-5" /></button>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Seller */}
@@ -281,10 +346,18 @@ const ListingDetail = () => {
       </div>
 
       {/* Mobile sticky bar */}
-      <div className="fixed bottom-16 left-0 right-0 bg-surface border-t border-border p-3 flex gap-3 md:hidden z-40">
-        <Button variant="outline" className="flex-1 gap-2" asChild><a href={`tel:${listing.profiles?.phone || ''}`}><Phone className="w-4 h-4" /> Appeler</a></Button>
-        <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}><MessageSquare className="w-4 h-4" /> Message</Button>
-      </div>
+      {!isOwner && (
+        <div className="fixed bottom-16 left-0 right-0 bg-surface border-t border-border p-3 flex gap-3 md:hidden z-40">
+          {phoneVisible && sellerPhone ? (
+            <Button variant="outline" className="flex-1 gap-2" asChild>
+              <a href={`tel:${sellerPhone}`}><Phone className="w-4 h-4" /> Appeler</a>
+            </Button>
+          ) : (
+            <Button variant="outline" className="flex-1 gap-2" disabled><EyeOff className="w-4 h-4" /> Masqué</Button>
+          )}
+          <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}><MessageSquare className="w-4 h-4" /> Message</Button>
+        </div>
+      )}
 
       {/* Lightbox */}
       {lightboxOpen && (

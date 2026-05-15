@@ -159,7 +159,8 @@ const CreateListing = () => {
         subcategory_id: selectedSubcategory,
         is_sponsored: boostPack !== 'free',
         sponsor_level: boostPack !== 'free' ? boostPack : null,
-      });
+        phone_visible: showPhone,
+      } as any);
 
       if (error) throw error;
 

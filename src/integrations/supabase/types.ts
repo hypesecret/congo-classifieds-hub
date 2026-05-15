@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocked_users: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string | null
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string | null
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string | null
@@ -201,6 +222,7 @@ export type Database = {
         Row: {
           category_id: string | null
           city: string
+          condition: Database["public"]["Enums"]["listing_condition"] | null
           contact_count: number | null
           cover_image: string | null
           created_at: string | null
@@ -211,9 +233,12 @@ export type Database = {
           is_free: boolean | null
           is_sponsored: boolean | null
           neighborhood: string | null
+          phone_visible: boolean | null
           price: number | null
           price_negotiable: boolean | null
           rejection_reason: string | null
+          slug: string | null
+          sold_at: string | null
           specs: Json | null
           sponsor_expires_at: string | null
           sponsor_level: string | null
@@ -227,6 +252,7 @@ export type Database = {
         Insert: {
           category_id?: string | null
           city?: string
+          condition?: Database["public"]["Enums"]["listing_condition"] | null
           contact_count?: number | null
           cover_image?: string | null
           created_at?: string | null
@@ -237,9 +263,12 @@ export type Database = {
           is_free?: boolean | null
           is_sponsored?: boolean | null
           neighborhood?: string | null
+          phone_visible?: boolean | null
           price?: number | null
           price_negotiable?: boolean | null
           rejection_reason?: string | null
+          slug?: string | null
+          sold_at?: string | null
           specs?: Json | null
           sponsor_expires_at?: string | null
           sponsor_level?: string | null
@@ -253,6 +282,7 @@ export type Database = {
         Update: {
           category_id?: string | null
           city?: string
+          condition?: Database["public"]["Enums"]["listing_condition"] | null
           contact_count?: number | null
           cover_image?: string | null
           created_at?: string | null
@@ -263,9 +293,12 @@ export type Database = {
           is_free?: boolean | null
           is_sponsored?: boolean | null
           neighborhood?: string | null
+          phone_visible?: boolean | null
           price?: number | null
           price_negotiable?: boolean | null
           rejection_reason?: string | null
+          slug?: string | null
+          sold_at?: string | null
           specs?: Json | null
           sponsor_expires_at?: string | null
           sponsor_level?: string | null
@@ -585,8 +618,10 @@ export type Database = {
           id: string
           listing_id: string | null
           rating: number
+          responded_at: string | null
           reviewer_id: string
           seller_id: string
+          seller_response: string | null
         }
         Insert: {
           comment?: string | null
@@ -594,8 +629,10 @@ export type Database = {
           id?: string
           listing_id?: string | null
           rating: number
+          responded_at?: string | null
           reviewer_id: string
           seller_id: string
+          seller_response?: string | null
         }
         Update: {
           comment?: string | null
@@ -603,8 +640,10 @@ export type Database = {
           id?: string
           listing_id?: string | null
           rating?: number
+          responded_at?: string | null
           reviewer_id?: string
           seller_id?: string
+          seller_response?: string | null
         }
         Relationships: [
           {
@@ -629,6 +668,33 @@ export type Database = {
             referencedColumns: ["user_id"]
           },
         ]
+      }
+      saved_searches: {
+        Row: {
+          created_at: string | null
+          filters: Json
+          id: string
+          name: string
+          notify: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          filters?: Json
+          id?: string
+          name: string
+          notify?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          filters?: Json
+          id?: string
+          name?: string
+          notify?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
       }
       system_settings: {
         Row: {
@@ -721,6 +787,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_my_account: { Args: never; Returns: undefined }
+      expire_old_listings: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -728,6 +796,15 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_listing_contacts: {
+        Args: { _listing_id: string }
+        Returns: undefined
+      }
+      increment_listing_views: {
+        Args: { _listing_id: string }
+        Returns: undefined
+      }
+      renew_listing: { Args: { _listing_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
@@ -743,6 +820,7 @@ export type Database = {
         | "under_review"
         | "approved"
         | "rejected"
+      listing_condition: "new" | "like_new" | "good" | "fair"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -879,6 +957,7 @@ export const Constants = {
         "approved",
         "rejected",
       ],
+      listing_condition: ["new", "like_new", "good", "fair"],
     },
   },
 } as const
