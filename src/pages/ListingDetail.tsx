@@ -346,10 +346,18 @@ const ListingDetail = () => {
       </div>
 
       {/* Mobile sticky bar */}
-      <div className="fixed bottom-16 left-0 right-0 bg-surface border-t border-border p-3 flex gap-3 md:hidden z-40">
-        <Button variant="outline" className="flex-1 gap-2" asChild><a href={`tel:${listing.profiles?.phone || ''}`}><Phone className="w-4 h-4" /> Appeler</a></Button>
-        <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}><MessageSquare className="w-4 h-4" /> Message</Button>
-      </div>
+      {!isOwner && (
+        <div className="fixed bottom-16 left-0 right-0 bg-surface border-t border-border p-3 flex gap-3 md:hidden z-40">
+          {phoneVisible && sellerPhone ? (
+            <Button variant="outline" className="flex-1 gap-2" asChild>
+              <a href={`tel:${sellerPhone}`}><Phone className="w-4 h-4" /> Appeler</a>
+            </Button>
+          ) : (
+            <Button variant="outline" className="flex-1 gap-2" disabled><EyeOff className="w-4 h-4" /> Masqué</Button>
+          )}
+          <Button variant="default" className="flex-1 gap-2" onClick={handleMessage}><MessageSquare className="w-4 h-4" /> Message</Button>
+        </div>
+      )}
 
       {/* Lightbox */}
       {lightboxOpen && (
