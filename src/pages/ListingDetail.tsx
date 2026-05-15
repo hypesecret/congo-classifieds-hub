@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Heart, Share2, MapPin, Clock, Eye,
   Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown, Maximize2, X,
+  CheckCircle2, RefreshCw, Trash2, EyeOff,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
@@ -15,6 +16,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useListing } from '@/hooks/useListing';
 import { useListings } from '@/hooks/useListings';
 import { useToggleFavorite, useFavorites } from '@/hooks/useFavorites';
+import { useMarkSold, useRenewListing, useDeleteListing, useIncrementViews } from '@/hooks/useListingActions';
 import { useSEO } from '@/hooks/useSEO';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
@@ -27,12 +29,41 @@ const ListingDetail = () => {
   const [reportOpen, setReportOpen] = useState(false);
   const [reporting, setReporting] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [showPhoneNumber, setShowPhoneNumber] = useState(false);
   const user = useAuthStore((s) => s.user);
+  const viewIncrementedRef = useRef<string | null>(null);
 
   const { data: listing, isLoading } = useListing(id);
   const { data: similarListingsData } = useListings({ category: listing?.category_id, limit: 4 });
   const { data: favoriteIds } = useFavorites();
   const { mutate: toggleFavorite } = useToggleFavorite();
+  const { mutate: incrementViews } = useIncrementViews();
+  const { mutate: markSold } = useMarkSold();
+  const { mutate: renewListing } = useRenewListing();
+  const { mutate: deleteListing } = useDeleteListing();
+
+  const isOwner = !!(user && listing && user.id === listing.user_id);
+  const phoneVisible = (listing as any)?.phone_visible !== false;
+  const sellerPhone = (listing as any)?.profiles?.phone;
+
+  // Increment views once per listing per session (skip owners)
+  useEffect(() => {
+    if (!listing || !id) return;
+    if (viewIncrementedRef.current === id) return;
+    if (isOwner) return;
+    viewIncrementedRef.current = id;
+    incrementViews(id);
+  }, [id, listing, isOwner, incrementViews]);
+
+  const handleMarkSold = () => {
+    if (!listing || !confirm('Marquer cette annonce comme vendue ?')) return;
+    markSold(listing.id);
+  };
+  const handleRenew = () => listing && renewListing(listing.id);
+  const handleDelete = () => {
+    if (!listing || !confirm('Supprimer définitivement cette annonce ?')) return;
+    deleteListing(listing.id, { onSuccess: () => navigate('/profil') });
+  };
 
   const similarListings = similarListingsData?.filter(l => l.id !== id) || [];
   const isFavorited = favoriteIds?.includes(id || '') || false;
