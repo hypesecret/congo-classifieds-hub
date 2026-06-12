@@ -60,6 +60,9 @@ const BOOST_PACKS = [
 
 const CreateListing = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const isEditMode = !!editId;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, profile, setShowLoginModal } = useAuthStore();
 
@@ -71,6 +74,7 @@ const CreateListing = () => {
   const [specs, setSpecs] = useState<Record<string, string>>({});
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [price, setPrice] = useState('');
   const [priceNegotiable, setPriceNegotiable] = useState(false);
   const [isFree, setIsFree] = useState(false);
@@ -83,6 +87,41 @@ const CreateListing = () => {
   const [paymentPhone, setPaymentPhone] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(isEditMode);
+
+  // Load existing listing in edit mode
+  useEffect(() => {
+    if (!isEditMode || !editId || !user) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('id', editId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error || !data) {
+        toast({ title: 'Annonce introuvable', variant: 'destructive' });
+        navigate('/profil');
+        return;
+      }
+      const d: any = data;
+      setSelectedCategory(d.category_id || '');
+      setSelectedSubcategory(d.subcategory_id || '');
+      setTitle(d.title || '');
+      setDescription(d.description || '');
+      setSpecs((d.specs as any) || {});
+      setExistingImages(d.images || []);
+      setPhotoPreviews(d.images || []);
+      setPrice(String(d.price || ''));
+      setPriceNegotiable(!!d.price_negotiable);
+      setIsFree(!!d.is_free);
+      setCity(d.city || 'Brazzaville');
+      setNeighborhood(d.neighborhood || '');
+      setShowPhone(d.phone_visible !== false);
+      setLoadingEdit(false);
+    })();
+  }, [isEditMode, editId, user, navigate]);
+
 
   if (!user) {
     return (
