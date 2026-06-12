@@ -42,9 +42,14 @@ const SearchResults = () => {
   const [selectedCity, setSelectedCity] = useState<string>(villeParam);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000000]);
 
+
+  const { data: categories } = useCategories();
+  const selectedCatName = useMemo(() => categories?.find(c => c.id === selectedCategory)?.name, [categories, selectedCategory]);
+
   const { mutate: saveSearch, isPending: savingSearch } = useCreateSavedSearch();
   const user = useAuthStore((s) => s.user);
   const setShowLoginModal = useAuthStore((s) => s.setShowLoginModal);
+
 
   const handleSaveSearch = () => {
     if (!user) { setShowLoginModal(true); return; }
