@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Heart, Share2, MapPin, Clock, Eye,
   Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown, Maximize2, X,
-  CheckCircle2, RefreshCw, Trash2, EyeOff,
+  CheckCircle2, RefreshCw, Trash2, EyeOff, Pencil,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
