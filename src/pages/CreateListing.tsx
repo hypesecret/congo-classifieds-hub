@@ -154,7 +154,13 @@ const CreateListing = () => {
   };
 
   const removePhoto = (index: number) => {
-    setPhotos((prev) => prev.filter((_, i) => i !== index));
+    const existingCount = existingImages.length;
+    if (index < existingCount) {
+      setExistingImages((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      const newIdx = index - existingCount;
+      setPhotos((prev) => prev.filter((_, i) => i !== newIdx));
+    }
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
