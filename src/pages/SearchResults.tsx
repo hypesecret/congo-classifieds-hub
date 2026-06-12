@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  SlidersHorizontal, X, Grid3X3, List, Search as SearchIcon,
+  SlidersHorizontal, X, Grid3X3, List, Search as SearchIcon, Bell,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
@@ -12,6 +12,8 @@ import { CITIES } from '@/lib/constants';
 import { useListings } from '@/hooks/useListings';
 import { useCategories } from '@/hooks/useCategories';
 import { useSEO } from '@/hooks/useSEO';
+import { useCreateSavedSearch } from '@/hooks/useSavedSearches';
+import { useAuthStore } from '@/stores/authStore';
 
 const SORT_OPTIONS = [
   { value: 'recent', label: 'Plus récent' },
