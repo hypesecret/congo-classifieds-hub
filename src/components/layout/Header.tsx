@@ -46,19 +46,6 @@ const Header = () => {
         <Link to="/" className="flex-shrink-0"><Logo size="md" /></Link>
 
         <div className="flex-1 max-w-[480px] flex items-center bg-background border border-border rounded-input overflow-hidden">
-          <div className="relative" ref={cityDropdownRef}>
-            <button onClick={() => setCityDropdownOpen(!cityDropdownOpen)} className="flex items-center gap-1 px-3 h-10 text-14 text-muted-foreground border-r border-border hover:bg-surface transition-colors">
-              {selectedCity}<ChevronDown className="w-3.5 h-3.5" />
-            </button>
-            {cityDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 bg-surface border border-border rounded-input shadow-md z-50 min-w-[180px]">
-                <button onClick={() => { setSelectedCity('Toutes les villes'); setCityDropdownOpen(false); }} className="w-full text-left px-3 py-2 text-14 hover:bg-primary-light transition-colors">Toutes les villes</button>
-                {CITIES.map(city => (
-                  <button key={city} onClick={() => { setSelectedCity(city); setCityDropdownOpen(false); }} className="w-full text-left px-3 py-2 text-14 hover:bg-primary-light transition-colors">{city}</button>
-                ))}
-              </div>
-            )}
-          </div>
           <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} placeholder="Que cherchez-vous ?" className="flex-1 h-10 px-3 text-14 bg-transparent outline-none text-foreground placeholder:text-muted-foreground" />
           <button onClick={handleSearch} className="h-10 px-4 bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"><Search className="w-4 h-4" /></button>
         </div>
