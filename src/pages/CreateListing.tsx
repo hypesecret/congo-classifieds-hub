@@ -663,10 +663,12 @@ const CreateListing = () => {
                     disabled={publishing}
                   >
                     {publishing
-                      ? 'Publication en cours...'
-                      : boostPack === 'free'
-                        ? 'Publier mon annonce gratuitement'
-                        : `Payer ${formatPrice(BOOST_PACKS.find((p) => p.id === boostPack)?.price || 0)} et publier`}
+                      ? (isEditMode ? 'Enregistrement…' : 'Publication en cours...')
+                      : isEditMode
+                        ? 'Enregistrer les modifications'
+                        : boostPack === 'free'
+                          ? 'Publier mon annonce gratuitement'
+                          : `Payer ${formatPrice(BOOST_PACKS.find((p) => p.id === boostPack)?.price || 0)} et publier`}
                   </Button>
                 )}
               </div>
