@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft, ChevronRight, Heart, Share2, MapPin, Clock, Eye,
   Phone, MessageSquare, BadgeCheck, ShieldCheck, Flag, ChevronDown, Maximize2, X,
-  CheckCircle2, RefreshCw, Trash2, EyeOff,
+  CheckCircle2, RefreshCw, Trash2, EyeOff, Pencil,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
@@ -284,6 +284,9 @@ const ListingDetail = () => {
                 <div className="flex items-center gap-2 mt-3 text-14 text-muted-foreground"><MapPin className="w-4 h-4 text-primary" />{listing.neighborhood ? `${listing.neighborhood}, ${listing.city}` : listing.city}</div>
                 {isOwner ? (
                   <div className="space-y-2 mt-5">
+                    <Button variant="default" className="w-full gap-2" onClick={() => navigate(`/deposer?edit=${listing.id}`)}>
+                      <Pencil className="w-4 h-4" /> Modifier l'annonce
+                    </Button>
                     <div className="flex gap-2">
                       <Button variant="outline" className="flex-1 gap-2" onClick={handleMarkSold} disabled={listing.status === 'sold'}>
                         <CheckCircle2 className="w-4 h-4" /> {listing.status === 'sold' ? 'Vendue' : 'Marquer vendue'}

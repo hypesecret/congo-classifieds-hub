@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
-  SlidersHorizontal, X, Grid3X3, List, Search as SearchIcon,
+  SlidersHorizontal, X, Grid3X3, List, Search as SearchIcon, Bell,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
 import ListingCard from '@/components/listing/ListingCard';
@@ -12,6 +12,8 @@ import { CITIES } from '@/lib/constants';
 import { useListings } from '@/hooks/useListings';
 import { useCategories } from '@/hooks/useCategories';
 import { useSEO } from '@/hooks/useSEO';
+import { useCreateSavedSearch } from '@/hooks/useSavedSearches';
+import { useAuthStore } from '@/stores/authStore';
 
 const SORT_OPTIONS = [
   { value: 'recent', label: 'Plus récent' },
@@ -40,8 +42,32 @@ const SearchResults = () => {
   const [selectedCity, setSelectedCity] = useState<string>(villeParam);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000000]);
 
+
   const { data: categories } = useCategories();
   const selectedCatName = useMemo(() => categories?.find(c => c.id === selectedCategory)?.name, [categories, selectedCategory]);
+
+  const { mutate: saveSearch, isPending: savingSearch } = useCreateSavedSearch();
+  const user = useAuthStore((s) => s.user);
+  const setShowLoginModal = useAuthStore((s) => s.setShowLoginModal);
+
+
+  const handleSaveSearch = () => {
+    if (!user) { setShowLoginModal(true); return; }
+    const name = [searchQuery, selectedCatName, selectedCity && selectedCity !== 'Toutes les villes' ? selectedCity : null]
+      .filter(Boolean).join(' · ') || 'Toutes annonces';
+    saveSearch({
+      name,
+      filters: {
+        query: searchQuery || null,
+        category_id: selectedCategory || null,
+        city: selectedCity && selectedCity !== 'Toutes les villes' ? selectedCity : null,
+        min_price: priceRange[0] > 0 ? priceRange[0] : null,
+        max_price: priceRange[1] < 50000000 ? priceRange[1] : null,
+      },
+    });
+  };
+
+
 
   useSEO({
     title: selectedCatName
@@ -196,6 +222,9 @@ const SearchResults = () => {
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" className="md:hidden gap-1.5" onClick={() => setMobileFiltersOpen(true)}>
                   <SlidersHorizontal className="w-4 h-4" /> Filtres
+                </Button>
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={handleSaveSearch} disabled={savingSearch}>
+                  <Bell className="w-4 h-4" /> <span className="hidden sm:inline">Sauvegarder</span>
                 </Button>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="h-9 px-3 rounded-input border border-input bg-surface text-14 text-foreground">
                   {SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}

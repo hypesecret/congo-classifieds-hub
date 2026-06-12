@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ChevronRight, Upload, Camera, Image as ImageIcon, X, GripVertical,
   Check, Smartphone, CreditCard,
@@ -60,6 +60,9 @@ const BOOST_PACKS = [
 
 const CreateListing = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const isEditMode = !!editId;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user, profile, setShowLoginModal } = useAuthStore();
 
@@ -71,6 +74,7 @@ const CreateListing = () => {
   const [specs, setSpecs] = useState<Record<string, string>>({});
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [price, setPrice] = useState('');
   const [priceNegotiable, setPriceNegotiable] = useState(false);
   const [isFree, setIsFree] = useState(false);
@@ -83,6 +87,41 @@ const CreateListing = () => {
   const [paymentPhone, setPaymentPhone] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(isEditMode);
+
+  // Load existing listing in edit mode
+  useEffect(() => {
+    if (!isEditMode || !editId || !user) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .eq('id', editId)
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error || !data) {
+        toast({ title: 'Annonce introuvable', variant: 'destructive' });
+        navigate('/profil');
+        return;
+      }
+      const d: any = data;
+      setSelectedCategory(d.category_id || '');
+      setSelectedSubcategory(d.subcategory_id || '');
+      setTitle(d.title || '');
+      setDescription(d.description || '');
+      setSpecs((d.specs as any) || {});
+      setExistingImages(d.images || []);
+      setPhotoPreviews(d.images || []);
+      setPrice(String(d.price || ''));
+      setPriceNegotiable(!!d.price_negotiable);
+      setIsFree(!!d.is_free);
+      setCity(d.city || 'Brazzaville');
+      setNeighborhood(d.neighborhood || '');
+      setShowPhone(d.phone_visible !== false);
+      setLoadingEdit(false);
+    })();
+  }, [isEditMode, editId, user, navigate]);
+
 
   if (!user) {
     return (
@@ -115,7 +154,13 @@ const CreateListing = () => {
   };
 
   const removePhoto = (index: number) => {
-    setPhotos((prev) => prev.filter((_, i) => i !== index));
+    const existingCount = existingImages.length;
+    if (index < existingCount) {
+      setExistingImages((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      const newIdx = index - existingCount;
+      setPhotos((prev) => prev.filter((_, i) => i !== newIdx));
+    }
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -123,7 +168,7 @@ const CreateListing = () => {
     switch (step) {
       case 1: return !!selectedCategory;
       case 2: return title.length >= 5 && description.length >= 20;
-      case 3: return photos.length >= 1;
+      case 3: return (photos.length + existingImages.length) >= 1;
       case 4: return (isFree || (!!price && parseInt(price) > 0)) && !!city;
       default: return true;
     }
@@ -132,19 +177,20 @@ const CreateListing = () => {
   const handlePublish = async () => {
     setPublishing(true);
     try {
-      // Upload images
-      const imageUrls: string[] = [];
+      // Upload new images
+      const uploadedUrls: string[] = [];
       for (const photo of photos) {
         const filePath = `${user.id}/${Date.now()}-${photo.name}`;
         const { error } = await supabase.storage.from('listing-images').upload(filePath, photo);
         if (!error) {
           const { data: urlData } = supabase.storage.from('listing-images').getPublicUrl(filePath);
-          imageUrls.push(urlData.publicUrl);
+          uploadedUrls.push(urlData.publicUrl);
         }
       }
 
-      const { error } = await supabase.from('listings').insert({
-        user_id: user.id,
+      const imageUrls = [...existingImages, ...uploadedUrls];
+
+      const payload: any = {
         title,
         description,
         price: isFree ? 0 : parseInt(price) || 0,
@@ -156,11 +202,28 @@ const CreateListing = () => {
         cover_image: imageUrls[0] || null,
         specs,
         category_id: selectedCategory,
-        subcategory_id: selectedSubcategory,
+        subcategory_id: selectedSubcategory || null,
+        phone_visible: showPhone,
+      };
+
+      if (isEditMode && editId) {
+        const { error } = await supabase
+          .from('listings')
+          .update(payload)
+          .eq('id', editId)
+          .eq('user_id', user.id);
+        if (error) throw error;
+        toast({ title: 'Annonce modifiée', description: 'Vos changements ont été enregistrés.' });
+        navigate(`/annonce/${editId}`);
+        return;
+      }
+
+      const { error } = await supabase.from('listings').insert({
+        ...payload,
+        user_id: user.id,
         is_sponsored: boostPack !== 'free',
         sponsor_level: boostPack !== 'free' ? boostPack : null,
-        phone_visible: showPhone,
-      } as any);
+      });
 
       if (error) throw error;
 
@@ -172,6 +235,7 @@ const CreateListing = () => {
       setPublishing(false);
     }
   };
+
 
   if (published) {
     return (
@@ -599,10 +663,12 @@ const CreateListing = () => {
                     disabled={publishing}
                   >
                     {publishing
-                      ? 'Publication en cours...'
-                      : boostPack === 'free'
-                        ? 'Publier mon annonce gratuitement'
-                        : `Payer ${formatPrice(BOOST_PACKS.find((p) => p.id === boostPack)?.price || 0)} et publier`}
+                      ? (isEditMode ? 'Enregistrement…' : 'Publication en cours...')
+                      : isEditMode
+                        ? 'Enregistrer les modifications'
+                        : boostPack === 'free'
+                          ? 'Publier mon annonce gratuitement'
+                          : `Payer ${formatPrice(BOOST_PACKS.find((p) => p.id === boostPack)?.price || 0)} et publier`}
                   </Button>
                 )}
               </div>
