@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ChevronRight, Upload, Camera, Image as ImageIcon, X, GripVertical,
   Check, Smartphone, CreditCard,
