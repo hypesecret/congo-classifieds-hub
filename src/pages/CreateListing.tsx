@@ -162,7 +162,7 @@ const CreateListing = () => {
     switch (step) {
       case 1: return !!selectedCategory;
       case 2: return title.length >= 5 && description.length >= 20;
-      case 3: return photos.length >= 1;
+      case 3: return (photos.length + existingImages.length) >= 1;
       case 4: return (isFree || (!!price && parseInt(price) > 0)) && !!city;
       default: return true;
     }
@@ -171,19 +171,20 @@ const CreateListing = () => {
   const handlePublish = async () => {
     setPublishing(true);
     try {
-      // Upload images
-      const imageUrls: string[] = [];
+      // Upload new images
+      const uploadedUrls: string[] = [];
       for (const photo of photos) {
         const filePath = `${user.id}/${Date.now()}-${photo.name}`;
         const { error } = await supabase.storage.from('listing-images').upload(filePath, photo);
         if (!error) {
           const { data: urlData } = supabase.storage.from('listing-images').getPublicUrl(filePath);
-          imageUrls.push(urlData.publicUrl);
+          uploadedUrls.push(urlData.publicUrl);
         }
       }
 
-      const { error } = await supabase.from('listings').insert({
-        user_id: user.id,
+      const imageUrls = [...existingImages, ...uploadedUrls];
+
+      const payload: any = {
         title,
         description,
         price: isFree ? 0 : parseInt(price) || 0,
@@ -195,11 +196,28 @@ const CreateListing = () => {
         cover_image: imageUrls[0] || null,
         specs,
         category_id: selectedCategory,
-        subcategory_id: selectedSubcategory,
+        subcategory_id: selectedSubcategory || null,
+        phone_visible: showPhone,
+      };
+
+      if (isEditMode && editId) {
+        const { error } = await supabase
+          .from('listings')
+          .update(payload)
+          .eq('id', editId)
+          .eq('user_id', user.id);
+        if (error) throw error;
+        toast({ title: 'Annonce modifiée', description: 'Vos changements ont été enregistrés.' });
+        navigate(`/annonce/${editId}`);
+        return;
+      }
+
+      const { error } = await supabase.from('listings').insert({
+        ...payload,
+        user_id: user.id,
         is_sponsored: boostPack !== 'free',
         sponsor_level: boostPack !== 'free' ? boostPack : null,
-        phone_visible: showPhone,
-      } as any);
+      });
 
       if (error) throw error;
 
@@ -211,6 +229,7 @@ const CreateListing = () => {
       setPublishing(false);
     }
   };
+
 
   if (published) {
     return (
