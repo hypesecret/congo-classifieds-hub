@@ -223,6 +223,9 @@ const SearchResults = () => {
                 <Button variant="outline" size="sm" className="md:hidden gap-1.5" onClick={() => setMobileFiltersOpen(true)}>
                   <SlidersHorizontal className="w-4 h-4" /> Filtres
                 </Button>
+                <Button variant="outline" size="sm" className="gap-1.5" onClick={handleSaveSearch} disabled={savingSearch}>
+                  <Bell className="w-4 h-4" /> <span className="hidden sm:inline">Sauvegarder</span>
+                </Button>
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="h-9 px-3 rounded-input border border-input bg-surface text-14 text-foreground">
                   {SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                 </select>
