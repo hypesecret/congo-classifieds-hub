@@ -10,12 +10,9 @@ import KYCBadge from '@/components/auth/KYCBadge';
 const Header = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedCity, setSelectedCity] = useState<string>('Brazzaville');
-  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const cityDropdownRef = useRef<HTMLDivElement>(null);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
   const { user, profile, setShowLoginModal, setShowRegisterModal, setShowKYCModal, signOut } = useAuthStore();
@@ -25,7 +22,6 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (cityDropdownRef.current && !cityDropdownRef.current.contains(event.target as Node)) setCityDropdownOpen(false);
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) setUserMenuOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -34,7 +30,7 @@ const Header = () => {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      navigate(`/annonces?q=${encodeURIComponent(searchQuery.trim())}&ville=${encodeURIComponent(selectedCity)}`);
+      navigate(`/annonces?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 
