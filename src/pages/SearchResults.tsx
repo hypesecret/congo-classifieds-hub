@@ -42,8 +42,27 @@ const SearchResults = () => {
   const [selectedCity, setSelectedCity] = useState<string>(villeParam);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 50000000]);
 
-  const { data: categories } = useCategories();
-  const selectedCatName = useMemo(() => categories?.find(c => c.id === selectedCategory)?.name, [categories, selectedCategory]);
+  const { mutate: saveSearch, isPending: savingSearch } = useCreateSavedSearch();
+  const user = useAuthStore((s) => s.user);
+  const setShowLoginModal = useAuthStore((s) => s.setShowLoginModal);
+
+  const handleSaveSearch = () => {
+    if (!user) { setShowLoginModal(true); return; }
+    const name = [searchQuery, selectedCatName, selectedCity && selectedCity !== 'Toutes les villes' ? selectedCity : null]
+      .filter(Boolean).join(' · ') || 'Toutes annonces';
+    saveSearch({
+      name,
+      filters: {
+        query: searchQuery || null,
+        category_id: selectedCategory || null,
+        city: selectedCity && selectedCity !== 'Toutes les villes' ? selectedCity : null,
+        min_price: priceRange[0] > 0 ? priceRange[0] : null,
+        max_price: priceRange[1] < 50000000 ? priceRange[1] : null,
+      },
+    });
+  };
+
+
 
   useSEO({
     title: selectedCatName
