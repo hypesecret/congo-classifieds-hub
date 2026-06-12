@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, Menu, X, Bell, Plus, ChevronDown, LogOut, User, Shield, MessageSquare, Heart } from 'lucide-react';
+import { Search, Menu, X, Bell, Plus, LogOut, User, Shield, MessageSquare, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Logo from '@/components/ui/Logo';
-import { CITIES } from '@/lib/constants';
 import { useAuthStore } from '@/stores/authStore';
 import { useNotifications } from '@/hooks/useNotifications';
 import KYCBadge from '@/components/auth/KYCBadge';
