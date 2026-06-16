@@ -27,16 +27,14 @@ const milestones = [
 ];
 
 export default function About() {
+  useSEO({
+    title: "À propos — Expat-Congo, la marketplace du Congo-Brazzaville",
+    description:
+      "Découvrez l'équipe et la mission d'Expat-Congo, la marketplace de petites annonces de référence au Congo-Brazzaville.",
+    canonical: "https://expat-congo.lovable.app/a-propos",
+  });
   return (
     <>
-      <Helmet>
-        <title>À propos — Expat-Congo, la marketplace du Congo-Brazzaville</title>
-        <meta
-          name="description"
-          content="Découvrez l'équipe et la mission d'Expat-Congo, la marketplace de petites annonces de référence au Congo-Brazzaville."
-        />
-        <link rel="canonical" href="https://expat-congo.lovable.app/a-propos" />
-      </Helmet>
       <Header />
       <PageWrapper>
         <main className="container mx-auto px-4 py-10 max-w-5xl">
