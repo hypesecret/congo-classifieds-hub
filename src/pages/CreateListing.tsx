@@ -5,6 +5,7 @@ import {
   Check, Smartphone, CreditCard,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
+import OnboardingBanner from '@/components/listing/OnboardingBanner';
 import ListingCard from '@/components/listing/ListingCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -280,6 +281,7 @@ const CreateListing = () => {
   return (
     <PageWrapper>
       <div className="container mx-auto py-6 max-w-[720px]">
+        <OnboardingBanner />
         {/* Progress bar */}
         <div className="bg-surface rounded-card border border-border shadow-sm overflow-hidden">
           <div className="h-1 bg-background">
