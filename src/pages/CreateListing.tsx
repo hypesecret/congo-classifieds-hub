@@ -15,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
 const STEPS = [
   { label: 'Catégorie', short: '1' },
