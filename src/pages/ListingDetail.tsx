@@ -20,6 +20,7 @@ import { useMarkSold, useRenewListing, useDeleteListing, useIncrementViews } fro
 import { useSEO } from '@/hooks/useSEO';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -112,6 +113,8 @@ const ListingDetail = () => {
 
   const handleMessage = () => {
     if (!user) { useAuthStore.getState().setShowLoginModal(true); return; }
+    track(ANALYTICS_EVENTS.LISTING_CONTACT, { listing_id: listing.id, method: 'message' });
+    supabase.rpc('increment_listing_contacts', { _listing_id: listing.id });
     navigate(`/messages?listing=${listing.id}&recipient=${listing.user_id}`);
   };
 

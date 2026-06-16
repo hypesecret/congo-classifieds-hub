@@ -227,6 +227,8 @@ const CreateListing = () => {
 
       if (error) throw error;
 
+      track(ANALYTICS_EVENTS.LISTING_PUBLISH, { category: payload.category, boost: boostPack });
+      if (boostPack !== 'free') track(ANALYTICS_EVENTS.BOOST_PURCHASE, { pack: boostPack });
       setPublished(true);
       toast({ title: 'Annonce soumise !', description: 'Elle sera publiée après vérification par notre équipe.' });
     } catch (err) {
