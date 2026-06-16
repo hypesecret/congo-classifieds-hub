@@ -5,6 +5,7 @@ import {
   Check, Smartphone, CreditCard,
 } from 'lucide-react';
 import PageWrapper from '@/components/layout/PageWrapper';
+import OnboardingBanner from '@/components/listing/OnboardingBanner';
 import ListingCard from '@/components/listing/ListingCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +16,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useCategories } from '@/hooks/useCategories';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 
 const STEPS = [
   { label: 'Catégorie', short: '1' },
@@ -227,6 +229,8 @@ const CreateListing = () => {
 
       if (error) throw error;
 
+      track(ANALYTICS_EVENTS.LISTING_PUBLISH, { category: payload.category, boost: boostPack });
+      if (boostPack !== 'free') track(ANALYTICS_EVENTS.BOOST_PURCHASE, { pack: boostPack });
       setPublished(true);
       toast({ title: 'Annonce soumise !', description: 'Elle sera publiée après vérification par notre équipe.' });
     } catch (err) {
@@ -277,6 +281,7 @@ const CreateListing = () => {
   return (
     <PageWrapper>
       <div className="container mx-auto py-6 max-w-[720px]">
+        <OnboardingBanner />
         {/* Progress bar */}
         <div className="bg-surface rounded-card border border-border shadow-sm overflow-hidden">
           <div className="h-1 bg-background">

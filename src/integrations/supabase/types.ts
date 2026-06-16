@@ -519,6 +519,7 @@ export type Database = {
           kyc_status: Database["public"]["Enums"]["kyc_status"] | null
           listings_count: number | null
           phone: string | null
+          referral_code: string | null
           response_rate: number | null
           updated_at: string | null
           user_id: string
@@ -538,6 +539,7 @@ export type Database = {
           kyc_status?: Database["public"]["Enums"]["kyc_status"] | null
           listings_count?: number | null
           phone?: string | null
+          referral_code?: string | null
           response_rate?: number | null
           updated_at?: string | null
           user_id: string
@@ -557,9 +559,43 @@ export type Database = {
           kyc_status?: Database["public"]["Enums"]["kyc_status"] | null
           listings_count?: number | null
           phone?: string | null
+          referral_code?: string | null
           response_rate?: number | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      referrals: {
+        Row: {
+          created_at: string
+          id: string
+          qualified_at: string | null
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          reward_amount: number
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          qualified_at?: string | null
+          referral_code: string
+          referred_id: string
+          referrer_id: string
+          reward_amount?: number
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          qualified_at?: string | null
+          referral_code?: string
+          referred_id?: string
+          referrer_id?: string
+          reward_amount?: number
+          status?: string
         }
         Relationships: []
       }
@@ -787,8 +823,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          _kind: string
+          _limit: number
+          _user_id: string
+          _window: string
+        }
+        Returns: boolean
+      }
       delete_my_account: { Args: never; Returns: undefined }
       expire_old_listings: { Args: never; Returns: number }
+      generate_referral_code: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

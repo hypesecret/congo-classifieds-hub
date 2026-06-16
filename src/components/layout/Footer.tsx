@@ -12,6 +12,7 @@ const footerLinks = {
     { label: 'Mode & Beauté', href: '/annonces?cat=34b7a3a5-ba7f-429d-984c-b49164b86ba9' },
   ],
   useful: [
+    { label: 'À propos', href: '/a-propos' },
     { label: 'Conditions Générales', href: '/cgu' },
     { label: 'Confidentialité', href: '/confidentialite' },
     { label: 'Nous contacter', href: '/contact' },

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { supabase } from '@/integrations/supabase/client';
 import { lovable } from '@/integrations/lovable';
+import { track, ANALYTICS_EVENTS } from '@/lib/analytics';
 import type { User, Session } from '@supabase/supabase-js';
 
 interface Profile {
@@ -89,11 +90,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       password,
       options: { data: metadata, emailRedirectTo: window.location.origin },
     });
+    if (!error) track(ANALYTICS_EVENTS.SIGNUP, { method: 'email' });
     return { error: error as Error | null };
   },
 
   signInWithEmail: async (email, password) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!error) track(ANALYTICS_EVENTS.LOGIN, { method: 'email' });
     return { error: error as Error | null };
   },
 
