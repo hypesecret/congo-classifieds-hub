@@ -232,7 +232,9 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
+            {activeTab === 'automod' && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-16 flex items-center gap-2 font-heading">
