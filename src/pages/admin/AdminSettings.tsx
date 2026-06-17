@@ -299,7 +299,50 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
+            {activeTab === 'homepage' && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-16 flex items-center gap-2 font-heading">
+                  <Layout className="w-5 h-5 text-primary" /> Page d'accueil
+                </CardTitle>
+                <CardDescription>
+                  Personnalisez le hero et les sections affichées sur la page d'accueil.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <label className="text-14 font-medium text-foreground mb-2 block">Titre principal (Hero)</label>
+                  <input
+                    type="text"
+                    className="w-full h-10 px-3 rounded-input border border-border text-14 outline-none focus:border-primary"
+                    value={heroTitle}
+                    onChange={e => setHeroTitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-14 font-medium text-foreground mb-2 block">Sous-titre</label>
+                  <textarea
+                    className="w-full h-20 p-3 rounded-card border border-border text-14 outline-none focus:border-primary resize-none"
+                    value={heroSubtitle}
+                    onChange={e => setHeroSubtitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-14 font-medium text-foreground mb-2 block">Nombre d'annonces "À la une"</label>
+                  <input
+                    type="number"
+                    className="w-full md:w-40 h-10 px-3 rounded-input border border-border text-14 outline-none focus:border-primary"
+                    value={featuredCount}
+                    onChange={e => setFeaturedCount(parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            )}
+
+            {activeTab === 'system' && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-16 flex items-center gap-2 font-heading">
