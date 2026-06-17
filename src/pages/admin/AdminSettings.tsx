@@ -10,6 +10,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'boosts' | 'automod' | 'homepage' | 'system'>('boosts');
+  // Homepage State
+  const [heroTitle, setHeroTitle] = useState('Trouvez tout ce dont vous avez besoin au Congo');
+  const [heroSubtitle, setHeroSubtitle] = useState('Achetez et vendez en toute confiance sur Expat-Congo');
+  const [featuredCount, setFeaturedCount] = useState(8);
   // Boosts State
   const [boosts, setBoosts] = useState({
     visibilite: { price: 2500, days: 7 },
