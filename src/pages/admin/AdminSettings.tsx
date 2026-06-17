@@ -403,6 +403,7 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
           </div>
         </div>
       </div>
