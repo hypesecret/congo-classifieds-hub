@@ -114,28 +114,32 @@ const AdminSettings = () => {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Navigation gauche */}
         <div className="w-full md:w-64 shrink-0">
-          <Tabs defaultValue="boosts" orientation="vertical" className="w-full" onValueChange={() => {}}>
-            <TabsList className="flex flex-col h-auto w-full bg-surface border border-border p-2 space-y-1">
-              <TabsTrigger value="boosts" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <Zap className="w-4 h-4 mr-2" /> Tarifs des Boosts
-              </TabsTrigger>
-              <TabsTrigger value="automod" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <Shield className="w-4 h-4 mr-2" /> Modération auto
-              </TabsTrigger>
-              <TabsTrigger value="homepage" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <Layout className="w-4 h-4 mr-2" /> Page d'accueil
-              </TabsTrigger>
-              <TabsTrigger value="system" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <SettingsIcon className="w-4 h-4 mr-2" /> Système
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex flex-col h-auto w-full bg-surface border border-border p-2 space-y-1 rounded-card">
+            {[
+              { id: 'boosts', label: 'Tarifs des Boosts', icon: Zap },
+              { id: 'automod', label: 'Modération auto', icon: Shield },
+              { id: 'homepage', label: "Page d'accueil", icon: Layout },
+              { id: 'system', label: 'Système', icon: SettingsIcon },
+            ].map(t => {
+              const Icon = t.icon;
+              const active = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTab(t.id as any)}
+                  className={`w-full flex items-center px-3 py-2 rounded text-14 text-left transition-colors ${active ? 'bg-primary-light/50 text-primary-dark font-medium' : 'text-text-secondary hover:bg-surface-elevated'}`}
+                >
+                  <Icon className="w-4 h-4 mr-2" /> {t.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Contenu */}
         <div className="flex-1 min-w-0">
-          {/* Section 1: Boosts */}
           <div className="space-y-6">
+            {activeTab === 'boosts' && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-16 flex items-center gap-2 font-heading">
