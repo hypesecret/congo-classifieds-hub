@@ -10,6 +10,11 @@ import { supabase } from '@/integrations/supabase/client';
 
 const AdminSettings = () => {
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'boosts' | 'automod' | 'homepage' | 'system'>('boosts');
+  // Homepage State
+  const [heroTitle, setHeroTitle] = useState('Trouvez tout ce dont vous avez besoin au Congo');
+  const [heroSubtitle, setHeroSubtitle] = useState('Achetez et vendez en toute confiance sur Expat-Congo');
+  const [featuredCount, setFeaturedCount] = useState(8);
   // Boosts State
   const [boosts, setBoosts] = useState({
     visibilite: { price: 2500, days: 7 },
@@ -109,28 +114,32 @@ const AdminSettings = () => {
       <div className="flex flex-col md:flex-row gap-6">
         {/* Navigation gauche */}
         <div className="w-full md:w-64 shrink-0">
-          <Tabs defaultValue="boosts" orientation="vertical" className="w-full" onValueChange={() => {}}>
-            <TabsList className="flex flex-col h-auto w-full bg-surface border border-border p-2 space-y-1">
-              <TabsTrigger value="boosts" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <Zap className="w-4 h-4 mr-2" /> Tarifs des Boosts
-              </TabsTrigger>
-              <TabsTrigger value="automod" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <Shield className="w-4 h-4 mr-2" /> Modération auto
-              </TabsTrigger>
-              <TabsTrigger value="homepage" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <Layout className="w-4 h-4 mr-2" /> Page d'accueil
-              </TabsTrigger>
-              <TabsTrigger value="system" className="w-full justify-start text-left data-[state=active]:bg-primary-light/50 data-[state=active]:text-primary-dark data-[state=active]:shadow-none">
-                <SettingsIcon className="w-4 h-4 mr-2" /> Système
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="flex flex-col h-auto w-full bg-surface border border-border p-2 space-y-1 rounded-card">
+            {[
+              { id: 'boosts', label: 'Tarifs des Boosts', icon: Zap },
+              { id: 'automod', label: 'Modération auto', icon: Shield },
+              { id: 'homepage', label: "Page d'accueil", icon: Layout },
+              { id: 'system', label: 'Système', icon: SettingsIcon },
+            ].map(t => {
+              const Icon = t.icon;
+              const active = activeTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => setActiveTab(t.id as any)}
+                  className={`w-full flex items-center px-3 py-2 rounded text-14 text-left transition-colors ${active ? 'bg-primary-light/50 text-primary-dark font-medium' : 'text-text-secondary hover:bg-surface-elevated'}`}
+                >
+                  <Icon className="w-4 h-4 mr-2" /> {t.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Contenu */}
         <div className="flex-1 min-w-0">
-          {/* Section 1: Boosts */}
           <div className="space-y-6">
+            {activeTab === 'boosts' && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-16 flex items-center gap-2 font-heading">
@@ -223,7 +232,9 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
+            {activeTab === 'automod' && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-16 flex items-center gap-2 font-heading">
@@ -288,7 +299,50 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
 
+            {activeTab === 'homepage' && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-16 flex items-center gap-2 font-heading">
+                  <Layout className="w-5 h-5 text-primary" /> Page d'accueil
+                </CardTitle>
+                <CardDescription>
+                  Personnalisez le hero et les sections affichées sur la page d'accueil.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <label className="text-14 font-medium text-foreground mb-2 block">Titre principal (Hero)</label>
+                  <input
+                    type="text"
+                    className="w-full h-10 px-3 rounded-input border border-border text-14 outline-none focus:border-primary"
+                    value={heroTitle}
+                    onChange={e => setHeroTitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-14 font-medium text-foreground mb-2 block">Sous-titre</label>
+                  <textarea
+                    className="w-full h-20 p-3 rounded-card border border-border text-14 outline-none focus:border-primary resize-none"
+                    value={heroSubtitle}
+                    onChange={e => setHeroSubtitle(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="text-14 font-medium text-foreground mb-2 block">Nombre d'annonces "À la une"</label>
+                  <input
+                    type="number"
+                    className="w-full md:w-40 h-10 px-3 rounded-input border border-border text-14 outline-none focus:border-primary"
+                    value={featuredCount}
+                    onChange={e => setFeaturedCount(parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+            )}
+
+            {activeTab === 'system' && (
             <Card>
               <CardHeader>
                 <CardTitle className="text-16 flex items-center gap-2 font-heading">
@@ -349,6 +403,7 @@ const AdminSettings = () => {
                 </div>
               </CardContent>
             </Card>
+            )}
           </div>
         </div>
       </div>
