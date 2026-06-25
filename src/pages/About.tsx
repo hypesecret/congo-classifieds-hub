@@ -1,6 +1,4 @@
 import { Shield, Users, Heart, Globe2, Sparkles, CheckCircle2 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Card } from "@/components/ui/card";
 import { useSEO } from "@/hooks/useSEO";
@@ -34,10 +32,9 @@ export default function About() {
     canonical: "https://expat-congo.lovable.app/a-propos",
   });
   return (
-    <>
-      <Header />
-      <PageWrapper>
-        <main className="container mx-auto px-4 py-10 max-w-5xl">
+    <PageWrapper>
+      <main className="container mx-auto px-4 py-10 max-w-5xl">
+
           {/* Hero */}
           <section className="text-center mb-14">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
@@ -131,9 +128,8 @@ export default function About() {
               Publier une annonce gratuite
             </a>
           </section>
-        </main>
-        <Footer />
-      </PageWrapper>
-    </>
+      </main>
+    </PageWrapper>
+
   );
 }
