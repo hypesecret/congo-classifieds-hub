@@ -128,9 +128,8 @@ export default function About() {
               Publier une annonce gratuite
             </a>
           </section>
-        </main>
-        <Footer />
-      </PageWrapper>
-    </>
+      </main>
+    </PageWrapper>
+
   );
 }
