@@ -1,6 +1,4 @@
 import { Shield, Users, Heart, Globe2, Sparkles, CheckCircle2 } from "lucide-react";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import PageWrapper from "@/components/layout/PageWrapper";
 import { Card } from "@/components/ui/card";
 import { useSEO } from "@/hooks/useSEO";
