@@ -35,32 +35,44 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-surface border-b border-border shadow-xs">
+    <header className="sticky top-0 z-50 bg-surface border-b border-border">
       {/* Desktop */}
-      <div className="hidden md:flex items-center h-16 container mx-auto gap-4">
+      <div className="hidden md:flex items-center h-[72px] container mx-auto gap-6">
         <Link to="/" className="flex-shrink-0"><Logo size="md" /></Link>
 
-        <div className="flex-1 max-w-[480px] flex items-center bg-background border border-border rounded-input overflow-hidden">
-          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleSearch()} placeholder="Que cherchez-vous ?" className="flex-1 h-10 px-3 text-14 bg-transparent outline-none text-foreground placeholder:text-muted-foreground" />
-          <button onClick={handleSearch} className="h-10 px-4 bg-primary text-primary-foreground hover:bg-primary-dark transition-colors"><Search className="w-4 h-4" /></button>
+        <div className="flex-1 max-w-xl mx-auto">
+          <div className="relative group">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Que recherchez-vous au Congo ?"
+              className="w-full h-10 pl-4 pr-11 rounded-input border border-border bg-background focus:bg-surface focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-14 text-foreground placeholder:text-muted-foreground"
+            />
+            <button onClick={handleSearch} className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded flex items-center justify-center text-muted-foreground hover:text-primary transition-colors">
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-3 ml-auto">
+        <div className="hidden lg:flex items-center gap-6 text-14 font-medium text-muted-foreground ml-auto">
+          <Link to="/annonces" className="hover:text-primary transition-colors">Catégories</Link>
           {isAuthenticated ? (
             <>
-              <button onClick={() => navigate('/messages')} className="relative p-2 text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => navigate('/messages')} className="relative text-muted-foreground hover:text-foreground transition-colors">
                 <Bell className="w-5 h-5" />
-                {unreadCount > 0 && <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary text-primary-foreground text-11 font-semibold rounded-full flex items-center justify-center">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+                {unreadCount > 0 && <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-primary text-primary-foreground text-11 font-semibold rounded-full flex items-center justify-center">{unreadCount > 9 ? '9+' : unreadCount}</span>}
               </button>
 
               <div className="relative" ref={userMenuRef}>
-                <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 p-1.5 rounded-pill hover:bg-background transition-colors">
+                <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 p-1 rounded-pill hover:bg-background transition-colors">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-heading font-bold text-14 overflow-hidden">
                     {profile?.avatar_url ? <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" /> : profile?.full_name?.[0]?.toUpperCase() || 'U'}
                   </div>
                 </button>
                 {userMenuOpen && (
-                  <div className="absolute right-0 top-full mt-1 w-64 bg-surface border border-border rounded-card shadow-md z-50 overflow-hidden animate-scale-in">
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-surface border border-border rounded-card shadow-md z-50 overflow-hidden animate-scale-in">
                     <div className="px-4 py-3 border-b border-border">
                       <p className="text-14 font-semibold text-foreground">{profile?.full_name || 'Utilisateur'}</p>
                       <p className="text-12 text-muted-foreground">{profile?.email || user?.email}</p>
@@ -81,12 +93,16 @@ const Header = () => {
                 )}
               </div>
 
-              <Button variant="default" size="default" className="gap-1.5" onClick={() => navigate('/deposer')}><Plus className="w-4 h-4" />Déposer une annonce</Button>
+              <button onClick={() => navigate('/deposer')} className="bg-accent hover:brightness-95 text-accent-foreground px-5 py-2.5 rounded-input font-bold text-14 transition-all shadow-xs flex items-center gap-1.5">
+                <Plus className="w-4 h-4" /> Publier une annonce
+              </button>
             </>
           ) : (
             <>
-              <Button variant="outline" size="sm" onClick={() => setShowLoginModal(true)}>Se connecter</Button>
-              <Button variant="default" size="default" className="gap-1.5" onClick={() => setShowRegisterModal(true)}><Plus className="w-4 h-4" />Déposer une annonce</Button>
+              <button onClick={() => setShowLoginModal(true)} className="hover:text-primary transition-colors">Connexion</button>
+              <button onClick={() => setShowRegisterModal(true)} className="bg-accent hover:brightness-95 text-accent-foreground px-5 py-2.5 rounded-input font-bold text-14 transition-all shadow-xs flex items-center gap-1.5">
+                <Plus className="w-4 h-4" /> Publier une annonce
+              </button>
             </>
           )}
         </div>

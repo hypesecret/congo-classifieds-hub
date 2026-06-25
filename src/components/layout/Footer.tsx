@@ -1,74 +1,153 @@
-import { Facebook, MessageCircle, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { Facebook, MessageCircle, Instagram, Mail, Phone, MapPin, Shield, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Logo from '@/components/ui/Logo';
+import { toast } from 'sonner';
 
 const footerLinks = {
   categories: [
-    { label: 'Immobilier', href: '/annonces?cat=6f160b12-52cf-4153-93fd-3eac211cc33d' },
-    { label: 'Véhicules', href: '/annonces?cat=c4238179-bdba-4053-88f5-858c83af14d0' },
-    { label: 'Emploi', href: '/annonces?cat=7f40b21b-dead-4ad4-a12e-5bb6ff902f23' },
-    { label: 'Électronique', href: '/annonces?cat=f7f70661-afb8-4429-aa66-b090136ae88b' },
-    { label: 'Services', href: '/annonces?cat=8d280353-473a-4c0b-a70e-5f9b8948676a' },
-    { label: 'Mode & Beauté', href: '/annonces?cat=34b7a3a5-ba7f-429d-984c-b49164b86ba9' },
+    { label: 'Immobilier', href: '/annonces?categorie=immobilier' },
+    { label: 'Véhicules', href: '/annonces?categorie=vehicules' },
+    { label: 'Emploi', href: '/annonces?categorie=emploi' },
+    { label: 'Électronique', href: '/annonces?categorie=electronique' },
+    { label: 'Services', href: '/annonces?categorie=services' },
+    { label: 'Mode & Beauté', href: '/annonces?categorie=mode-beaute' },
   ],
-  useful: [
+  cities: [
+    { label: 'Brazzaville', href: '/annonces?ville=Brazzaville' },
+    { label: 'Pointe-Noire', href: '/annonces?ville=Pointe-Noire' },
+    { label: 'Dolisie', href: '/annonces?ville=Dolisie' },
+    { label: 'Ouesso', href: '/annonces?ville=Ouesso' },
+    { label: 'Nkayi', href: '/annonces?ville=Nkayi' },
+  ],
+  help: [
     { label: 'À propos', href: '/a-propos' },
-    { label: 'Conditions Générales', href: '/cgu' },
-    { label: 'Confidentialité', href: '/confidentialite' },
+    { label: 'Comment ça marche', href: '/faq' },
+    { label: 'Sécurité', href: '/confidentialite' },
     { label: 'Nous contacter', href: '/contact' },
     { label: 'FAQ', href: '/faq' },
   ],
 };
 
-const Footer = () => (
-  <footer className="bg-foreground text-primary-foreground hidden md:block">
-    <div className="container mx-auto py-12 md:py-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-        <div className="space-y-4">
-          <Link to="/"><Logo size="md" variant="light" /></Link>
-          <p className="text-14 text-muted-foreground leading-relaxed">
-            La référence des petites annonces au Congo-Brazzaville. Achetez, vendez et trouvez tout ce dont vous avez besoin.
-          </p>
-          <div className="flex items-center gap-3">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"><Facebook className="w-4 h-4" /></a>
-            <a href="https://wa.me/242060000000" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"><MessageCircle className="w-4 h-4" /></a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-9 h-9 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"><Instagram className="w-4 h-4" /></a>
+const Footer = () => {
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) {
+      toast.error('Email invalide');
+      return;
+    }
+    setSubscribed(true);
+    toast.success('Merci ! Vous êtes inscrit à la newsletter');
+    setEmail('');
+  };
+
+  return (
+    <footer className="bg-foreground text-background hidden md:block border-t border-border/10">
+      <div className="container mx-auto py-16 md:py-20">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-10 mb-14">
+          {/* Brand */}
+          <div className="col-span-2">
+            <Link to="/" className="inline-block mb-5"><Logo size="md" variant="light" /></Link>
+            <p className="max-w-xs text-14 text-background/60 leading-relaxed mb-6">
+              La référence de la petite annonce au Congo-Brazzaville. Une plateforme sécurisée pour toutes vos transactions quotidiennes.
+            </p>
+            <div className="flex gap-3">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-10 h-10 rounded-full bg-background/5 border border-background/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-colors">
+                <Facebook className="w-4 h-4" />
+              </a>
+              <a href="https://wa.me/242060000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="w-10 h-10 rounded-full bg-background/5 border border-background/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-colors">
+                <MessageCircle className="w-4 h-4" />
+              </a>
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-10 h-10 rounded-full bg-background/5 border border-background/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-colors">
+                <Instagram className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+
+          {/* Categories */}
+          <div>
+            <h4 className="text-background font-heading font-bold text-13 uppercase tracking-wider mb-5">Catégories</h4>
+            <ul className="space-y-3 text-14">
+              {footerLinks.categories.map(link => (
+                <li key={link.label}><Link to={link.href} className="text-background/60 hover:text-accent transition-colors">{link.label}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Cities */}
+          <div>
+            <h4 className="text-background font-heading font-bold text-13 uppercase tracking-wider mb-5">Villes</h4>
+            <ul className="space-y-3 text-14">
+              {footerLinks.cities.map(link => (
+                <li key={link.label}><Link to={link.href} className="text-background/60 hover:text-accent transition-colors">{link.label}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Help */}
+          <div>
+            <h4 className="text-background font-heading font-bold text-13 uppercase tracking-wider mb-5">Aide</h4>
+            <ul className="space-y-3 text-14">
+              {footerLinks.help.map(link => (
+                <li key={link.label}><Link to={link.href} className="text-background/60 hover:text-accent transition-colors">{link.label}</Link></li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter + trust */}
+          <div className="col-span-2 lg:col-span-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-10 border-t border-background/10">
+              <div className="lg:col-span-2">
+                <h4 className="text-background font-heading font-bold text-14 mb-2">Recevez les meilleures annonces</h4>
+                <p className="text-12 text-background/50 mb-4">Une newsletter par semaine, pas plus. Désinscription en un clic.</p>
+                <form onSubmit={handleSubscribe} className="flex gap-2 max-w-md">
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="votre@email.com"
+                    className="bg-background/5 border border-background/10 rounded-input px-4 py-2.5 text-14 flex-1 outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-background placeholder:text-background/40"
+                  />
+                  <button type="submit" disabled={subscribed} className="bg-primary hover:bg-primary-dark text-primary-foreground px-5 py-2.5 rounded-input text-14 font-bold transition-colors flex items-center gap-1.5 disabled:opacity-60">
+                    {subscribed ? <><Check className="w-4 h-4" /> OK</> : 'S\'inscrire'}
+                  </button>
+                </form>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <div className="p-4 bg-background/5 rounded-card border border-background/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Shield className="w-3.5 h-3.5 text-success" />
+                    <span className="text-11 font-bold text-background uppercase tracking-wider">Plateforme sécurisée</span>
+                  </div>
+                  <p className="text-11 text-background/50 leading-snug">Vos données sont chiffrées et protégées. Annonces vérifiées.</p>
+                </div>
+                <div className="flex items-center gap-4 text-12 text-background/50">
+                  <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5" /> +242 06 900 00 00</span>
+                  <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5" /> contact@expat-congo.com</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div>
-          <h4 className="font-heading font-semibold text-16 mb-4">Catégories</h4>
-          <ul className="space-y-2.5">
-            {footerLinks.categories.map(link => (
-              <li key={link.label}><Link to={link.href} className="text-14 text-muted-foreground hover:text-primary-foreground transition-colors">{link.label}</Link></li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-heading font-semibold text-16 mb-4">Liens utiles</h4>
-          <ul className="space-y-2.5">
-            {footerLinks.useful.map(link => (
-              <li key={link.label}><Link to={link.href} className="text-14 text-muted-foreground hover:text-primary-foreground transition-colors">{link.label}</Link></li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h4 className="font-heading font-semibold text-16 mb-4">Contact</h4>
-          <ul className="space-y-3">
-            <li className="flex items-start gap-2 text-14 text-muted-foreground"><Phone className="w-4 h-4 mt-0.5 flex-shrink-0" /><span>+242 06 900 00 00</span></li>
-            <li className="flex items-start gap-2 text-14 text-muted-foreground"><Mail className="w-4 h-4 mt-0.5 flex-shrink-0" /><span>contact@expat-congo.com</span></li>
-            <li className="flex items-start gap-2 text-14 text-muted-foreground"><MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" /><span>Brazzaville, République du Congo</span></li>
-          </ul>
+        <div className="pt-8 border-t border-background/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-11 font-medium text-background/40 flex items-center gap-1.5">
+            <MapPin className="w-3 h-3" /> © {new Date().getFullYear()} EXPAT-CONGO — FAIT À BRAZZAVILLE AVEC PASSION
+          </p>
+          <div className="flex items-center gap-6 text-11 font-medium text-background/40">
+            <span>FRANÇAIS (CG)</span>
+            <Link to="/cgu" className="hover:text-background transition-colors">MENTIONS LÉGALES</Link>
+            <Link to="/confidentialite" className="hover:text-background transition-colors">CONFIDENTIALITÉ</Link>
+          </div>
         </div>
       </div>
-
-      <div className="mt-12 pt-6 border-t border-primary-foreground/10 text-center text-12 text-muted-foreground">
-        © {new Date().getFullYear()} Expat-Congo. Tous droits réservés.
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 export default Footer;
